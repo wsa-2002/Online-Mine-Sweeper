@@ -6,6 +6,7 @@ import (
 	"github.com/bitly/go-simplejson"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
 )
 
@@ -42,15 +43,14 @@ func SocketHandler(c *gin.Context) {
 		}
 		//fmt.Println(socketData.Get("type").MustString())
 		switch socketData.Get("type").MustString() {
-		case "set_user":
+		case "setUser":
 			data := socketData.Get("data")
 			result := persistence.CreateUser(data.Get("username").MustString())
 			fmt.Println(result)
-			fmt.Println("jkjk")
 			err = ws.WriteJSON(struct {
-				UserId int `json:"user_id"`
+				UserId primitive.ObjectID `json:"user_id"`
 			}{
-				1,
+				result.InsertedID.(primitive.ObjectID),
 			})
 		default:
 			err = ws.WriteJSON(struct {
