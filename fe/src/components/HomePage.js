@@ -27,16 +27,13 @@ const HomePage = ({
   }
 
   const handleMineNum = (e) => {
-    mineNumOnChange(e.target.value);
-    if (e.target.value > boardSize * boardSize) {
-      setError(true);
-    } else {
-      setError(false);
-    }
+    const isvalid = mineNumOnChange(e.target.value);
+    setError(isvalid);
   };
 
   const handleBoardSize = (e) => {
-    boardSizeOnChange(e.target.value);
+    const isvalid = boardSizeOnChange(e.target.value);
+    setError(isvalid);
   };
 
   return (
@@ -86,7 +83,7 @@ const HomePage = ({
                   step="1"
                   min="1"
                   max="20"
-                  defaultValue="3"
+                  defaultValue="8"
                   onChange={(e) => handleBoardSize(e)}
                 />
                 {error ? (

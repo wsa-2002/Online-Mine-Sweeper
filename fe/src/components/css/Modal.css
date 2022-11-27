@@ -12,7 +12,7 @@
 .modal{
     z-index: 1;
     margin: auto;
-    height: 50%;
+    height: 100%;
     width: 100%;
     position: absolute;
     background-color: rgba(0, 0, 0, 0.5);
@@ -22,13 +22,13 @@
 
 }
 .modalWrapper{
-    height: 25%;
+    height: 35%;
 }
 .modalContent{
     margin: auto 20%;
     justify-content: center;
     text-align: center;
-    height: 50%;
+    height: 25%;
     width: auto;
     padding: auto;
     background-color: lightblue;

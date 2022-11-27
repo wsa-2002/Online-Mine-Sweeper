@@ -35,8 +35,11 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
     {
       /* Useful Hint: createBoard(...) */
     }
-    setBoard(createBoard(boardSize, mineNum).board);
-    setMineLocations(createBoard(boardSize, mineNum).mineLocations);
+    const newBoard = createBoard(boardSize, mineNum);
+    setNonMineCount(boardSize * boardSize - mineNum);
+    setRemainFlagNum(mineNum);
+    setMineLocations(newBoard.mineLocations);
+    setBoard(newBoard.board);
   };
 
   const restartGame = () => {
@@ -68,35 +71,18 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
     {
       /* Reminder: The cell can be flagged only when it is not revealed. */
     }
-    if (!board[x][y].revealed) {
-      if (board[x][y].flagged) {
-        setBoard(
-          board.map((row) => {
-            row.map((cell) => {
-              if (cell.x === x && cell.y === y) {
-                cell.flagged = false;
-              }
-              return cell;
-            });
-            return row;
-          })
-        );
-        setRemainFlagNum(remainFlagNum - 1);
-      } else {
-        setBoard(
-          board.map((row) => {
-            row.map((cell) => {
-              if (cell.x === x && cell.y === y) {
-                cell.flagged = true;
-              }
-              return cell;
-            });
-            return row;
-          })
-        );
-        setRemainFlagNum(remainFlagNum + 1);
-      }
+    let newBoard = JSON.parse(JSON.stringify(board));
+    let newFlagNum = remainFlagNum;
+    if (newBoard[x][y].revealed === true) return;
+    if (newBoard[x][y].flagged !== true && newBoard[x][y].revealed !== true) {
+      newBoard[x][y].flagged = true;
+      newFlagNum--;
+    } else {
+      newBoard[x][y].flagged = false;
+      newFlagNum++;
     }
+    setRemainFlagNum(newFlagNum);
+    setBoard(newBoard);
   };
 
   const revealCell = (x, y) => {
@@ -112,25 +98,29 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
     {
       /* Reminder: Also remember to handle the condition that after you reveal this cell then you win the game. */
     }
+    if (board[x][y].revealed || gameOver || board[x][y].flagged) return;
 
-    if (!board[x][y].revealed && !board[x][y].flagged) {
-      if (board[x][y].value === "💣") {
+    let newBoard = JSON.parse(JSON.stringify(board));
+    // Hit the mine!!
+    if (newBoard[x][y].value === "💣") {
+      for (let i = 0; i < mineLocations.length; i++) {
+        if (!newBoard[mineLocations[i][0]][mineLocations[i][1]].flagged)
+          newBoard[mineLocations[i][0]][mineLocations[i][1]].revealed = true;
+      }
+      setBoard(newBoard);
+      setGameOver(true);
+    }
+    // Reveal the number cell
+    else {
+      let newRevealedBoard = revealed(newBoard, x, y, nonMineCount);
+      setBoard(newRevealedBoard.board);
+      setNonMineCount(newRevealedBoard.newNonMinesCount);
+      if (newRevealedBoard.newNonMinesCount === 0) {
+        console.log("win");
         setGameOver(true);
-      } else {
-        setBoard(
-          board.map((row) => {
-            row.map((cell) => {
-              if (cell.x === x && cell.y === y) {
-                cell.revealed = true;
-              }
-              return cell;
-            });
-            return row;
-          })
-        );
+        setWin(true);
       }
     }
-    // revealed(board, x, y, nonMineCount);
   };
 
   return (

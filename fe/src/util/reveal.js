@@ -16,10 +16,6 @@ export const revealed = (board, x, y, newNonMinesCount) => {
   {
     /* Useful Hint: If the value of the cell is not 0, only show the cell value. */
   }
-  if (!board[x][y].revealed && board[x][y].value !== 0) {
-    console.log("!");
-    board[x][y].revealed = true;
-  }
 
   {
     /* -- TODO 4-2 -- */
@@ -30,9 +26,160 @@ export const revealed = (board, x, y, newNonMinesCount) => {
   {
     /* Useful Hint: The input variables 'newNonMinesCount' and 'board' may be changed in this function. */
   }
-  if (!board[x][y].revealed && board[x][y] === 0) {
-    for (let a = 0; a < board.length; a++) {
-      for (let b = 0; b < board.length; b++) {}
+
+  console.log(board[x][y]);
+  if (board[x][y].revealed) return;
+
+  let flipped = [];
+  flipped.push(board[x][y]);
+  while (flipped.length !== 0) {
+    let single = flipped.pop();
+    if (!single.revealed) {
+      newNonMinesCount--;
+      single.revealed = true;
+    }
+    if (single.value !== 0) break;
+
+    // Bottom - Right
+    if (
+      single.x > 0 &&
+      single.y > 0 &&
+      board[single.x - 1][single.y - 1].value === 0 &&
+      !board[single.x - 1][single.y - 1].revealed
+    )
+      flipped.push(board[single.x - 1][single.y - 1]);
+
+    // Bottom - Left
+    if (
+      single.x < board.length - 1 &&
+      single.y < board[0].length - 1 &&
+      board[single.x + 1][single.y + 1].value === 0 &&
+      !board[single.x + 1][single.y + 1].revealed
+    )
+      flipped.push(board[single.x + 1][single.y + 1]);
+
+    // Top - Left
+    if (
+      single.x < board.length - 1 &&
+      single.y > 0 &&
+      board[single.x + 1][single.y - 1].value === 0 &&
+      !board[single.x + 1][single.y - 1].revealed
+    )
+      flipped.push(board[single.x + 1][single.y - 1]);
+
+    // Top - Right
+    if (
+      single.x > 0 &&
+      single.y < board[0].length - 1 &&
+      board[single.x - 1][single.y + 1].value === 0 &&
+      !board[single.x - 1][single.y + 1].revealed
+    )
+      flipped.push(board[single.x - 1][single.y + 1]);
+
+    // Single ones
+
+    // Top
+    if (
+      single.x > 0 &&
+      board[single.x - 1][single.y].value === 0 &&
+      !board[single.x - 1][single.y].revealed
+    )
+      flipped.push(board[single.x - 1][single.y]);
+
+    // Bottom
+    if (
+      single.x < board.length - 1 &&
+      board[single.x + 1][single.y].value === 0 &&
+      !board[single.x + 1][single.y].revealed
+    )
+      flipped.push(board[single.x + 1][single.y]);
+
+    // Left
+    if (
+      single.y > 0 &&
+      board[single.x][single.y - 1].value === 0 &&
+      !board[single.x][single.y - 1].revealed
+    )
+      flipped.push(board[single.x][single.y - 1]);
+
+    // Right
+    if (
+      single.y < board[0].length - 1 &&
+      board[single.x][single.y + 1].value === 0 &&
+      !board[single.x][single.y + 1].revealed
+    )
+      flipped.push(board[single.x][single.y + 1]);
+
+    // Start reveal items
+
+    // Top left
+    if (
+      single.x > 0 &&
+      single.y > 0 &&
+      !board[single.x - 1][single.y - 1].revealed
+    ) {
+      board[single.x - 1][single.y - 1].revealed = true;
+      newNonMinesCount--;
+    }
+
+    // Left
+    if (single.y > 0 && !board[single.x][single.y - 1].revealed) {
+      board[single.x][single.y - 1].revealed = true;
+      newNonMinesCount--;
+    }
+
+    // Bottom left
+    if (
+      single.x < board.length - 1 &&
+      single.y > 0 &&
+      !board[single.x + 1][single.y - 1].revealed
+    ) {
+      board[single.x + 1][single.y - 1].revealed = true;
+      newNonMinesCount--;
+    }
+
+    // Bottom
+    if (
+      single.x < board.length - 1 &&
+      !board[single.x + 1][single.y].revealed
+    ) {
+      board[single.x + 1][single.y].revealed = true;
+      newNonMinesCount--;
+    }
+
+    // Bottom right
+    if (
+      single.x < board.length - 1 &&
+      single.y < board[0].length - 1 &&
+      !board[single.x + 1][single.y + 1].revealed
+    ) {
+      board[single.x + 1][single.y + 1].revealed = true;
+      newNonMinesCount--;
+    }
+
+    // Right
+    if (
+      single.y < board[0].length - 1 &&
+      !board[single.x][single.y + 1].revealed
+    ) {
+      board[single.x][single.y + 1].revealed = true;
+      newNonMinesCount--;
+    }
+
+    // Top right
+    if (
+      single.x > 0 &&
+      single.y < board[0].length - 1 &&
+      !board[single.x - 1][single.y + 1].revealed
+    ) {
+      board[single.x - 1][single.y + 1].revealed = true;
+      newNonMinesCount--;
+    }
+
+    // Top
+    if (single.x > 0 && !board[single.x - 1][single.y].revealed) {
+      board[single.x - 1][single.y].revealed = true;
+      newNonMinesCount--;
     }
   }
 

@@ -7,7 +7,7 @@
 ****************************************************************************/
 
 import randomNum from "./randomFixSeed";
-// eslint-disable-next-line
+
 export default (boardSize, mineNum) => {
   let board = [];
   let mineLocations = [];

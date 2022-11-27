@@ -30,12 +30,20 @@ const MineSweeper = () => {
   }
   const mineNumOnChange = (n) => {
     setMineNum(n);
+    if (n < boardSize * boardSize) {
+      return false;
+    }
+    return true;
   };
   {
     /* -- TODO 6-2 -- */
   }
   const boardSizeOnChange = (n) => {
     setBoardSize(n);
+    if (n * n > mineNum) {
+      return false;
+    }
+    return true;
   };
   {
     /* -- TODO 5-2 -- */
