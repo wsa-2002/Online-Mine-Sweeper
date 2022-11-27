@@ -14,13 +14,6 @@ export default function Dashboard({ remainFlagNum, gameOver }) {
   let [time, setTime] = useState(0);
   let [sTime, setSTime] = useState(0);
 
-  {
-    /* -- TODO 7 -- */
-  }
-  {
-    /* Useful Hint: Try to understand the difference between time and sTime. */
-  }
-
   useEffect(() => {
     if (time > 0 && gameOver) {
       setSTime(time);

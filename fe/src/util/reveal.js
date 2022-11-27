@@ -7,26 +7,6 @@
 ****************************************************************************/
 
 export const revealed = (board, x, y, newNonMinesCount) => {
-  {
-    /* -- TODO 4-2 -- */
-  }
-  {
-    /* Useful Hint: If the cell is already revealed, do nothing. */
-  }
-  {
-    /* Useful Hint: If the value of the cell is not 0, only show the cell value. */
-  }
-
-  {
-    /* -- TODO 4-2 -- */
-  }
-  {
-    /* Useful Hint: If the value of the cell is 0, we should try to find the value of adjacent cells until the value we found is not 0. */
-  }
-  {
-    /* Useful Hint: The input variables 'newNonMinesCount' and 'board' may be changed in this function. */
-  }
-
   console.log(board[x][y]);
   if (board[x][y].revealed) return;
 
@@ -77,7 +57,6 @@ export const revealed = (board, x, y, newNonMinesCount) => {
       flipped.push(board[single.x - 1][single.y + 1]);
 
     // Single ones
-
     // Top
     if (
       single.x > 0 &&
@@ -111,7 +90,6 @@ export const revealed = (board, x, y, newNonMinesCount) => {
       flipped.push(board[single.x][single.y + 1]);
 
     // Start reveal items
-
     // Top left
     if (
       single.x > 0 &&

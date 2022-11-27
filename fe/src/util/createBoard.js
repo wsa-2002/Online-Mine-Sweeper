@@ -8,6 +8,7 @@
 
 import randomNum from "./randomFixSeed";
 
+// eslint-disable-next-line
 export default (boardSize, mineNum) => {
   let board = [];
   let mineLocations = [];
@@ -51,22 +52,6 @@ export default (boardSize, mineNum) => {
       mineLocations.push([x, y]);
       mineCount++;
     }
-  }
-
-  {
-    /* -- TODO 2 -- */
-  }
-  {
-    /* Useful Hints: Calculate and update the value of each cell in the board. The value means the number of mines adjacent to the cell. */
-  }
-  {
-    /* Reminder: Some cells in the board do not have "Top" position, some do not have "Top-Right" position .... */
-  }
-  {
-    /* Warning: The value of any cell will not be bigger than 8 logically. */
-  }
-  {
-    /* Testing: printBoard() */
   }
 
   mineLocations.map((mine) => {
