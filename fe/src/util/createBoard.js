@@ -13,17 +13,17 @@ export default (boardSize, mineNum) => {
   let board = [];
   let mineLocations = [];
 
-  // Print Board function (For testing)
-  const printBoard = () => {
-    console.log("Current Board");
-    for (let x = 0; x < boardSize; x++) {
-      console.log(
-        board[x].map((x) => {
-          return x.value !== "💣" ? x.value.toString() + " " : x.value;
-        })
-      );
-    }
-  };
+  // // Print Board function (For testing)
+  // const printBoard = () => {
+  //   console.log("Current Board");
+  //   for (let x = 0; x < boardSize; x++) {
+  //     console.log(
+  //       board[x].map((x) => {
+  //         return x.value !== "💣" ? x.value.toString() + " " : x.value;
+  //       })
+  //     );
+  //   }
+  // };
 
   // Create a blank board
   for (let x = 0; x < boardSize; x++) {

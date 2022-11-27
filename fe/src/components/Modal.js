@@ -6,16 +6,16 @@
   Copyright     [ 2021 10 ]
 ****************************************************************************/
 
-import React, { useEffect, useState } from "react";
+// import React, { useEffect, useState } from "react";
 import "./css/Modal.css";
 
 export default function Modal({ restartGame, backToHome, win }) {
-  const [render, setRender] = useState(false);
-  useEffect(() => {
-    setTimeout(() => {
-      setRender(true);
-    }, 1000);
-  }, []);
+  // const [render, setRender] = useState(false);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setRender(true);
+  //   }, 1000);
+  // }, []);
 
   return (
     <div className="modal">
