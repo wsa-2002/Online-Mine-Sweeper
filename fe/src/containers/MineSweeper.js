@@ -16,30 +16,26 @@ const MineSweeper = () => {
   const [mineNum, setMineNum] = useState(10); // A integer variable to store the number of mines in the game. The default value is 10.
   const [boardSize, setBoardSize] = useState(8); // A integer variable to store the board size in the game. The default value is 8.
 
-  {
-    /* Useful Hint: The four functions below only need to fill up with those three hook functions above. */
-  }
-  {
-    /* -- TODO 1-2 -- */
-  }
   const startGameOnClick = () => {
     setStartGame(true);
   };
-  {
-    /* -- TODO 6-2 -- */
-  }
+
   const mineNumOnChange = (n) => {
     setMineNum(n);
+    if (n < boardSize * boardSize) {
+      return false;
+    }
+    return true;
   };
-  {
-    /* -- TODO 6-2 -- */
-  }
+
   const boardSizeOnChange = (n) => {
     setBoardSize(n);
+    if (n * n > mineNum) {
+      return false;
+    }
+    return true;
   };
-  {
-    /* -- TODO 5-2 -- */
-  }
+
   const backToHomeOnClick = () => {
     setStartGame(false);
     setMineNum(10);
@@ -48,9 +44,6 @@ const MineSweeper = () => {
 
   return (
     <div className="mineSweeper">
-      {/* -- TODO 1-1 -- */}
-      {/* Useful Hint: If ... <HomePage startGameOnClick = {startGameOnClick} .../> else <Board .../> */}
-      {/* Reminder: You can refer to the structure file in p.6 of Hack1.pdf. */}
       {startGame ? (
         <Board
           boardSize={boardSize}

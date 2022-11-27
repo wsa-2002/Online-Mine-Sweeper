@@ -23,122 +23,65 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
   const [win, setWin] = useState(false); // A boolean variable. If true, means that you win the game.
 
   useEffect(() => {
-    // Calling the function
     freshBoard();
   }, []);
 
-  // Creating a board
   const freshBoard = () => {
-    {
-      /* -- TODO 3-1 -- */
-    }
-    {
-      /* Useful Hint: createBoard(...) */
-    }
-    setBoard(createBoard(boardSize, mineNum).board);
-    setMineLocations(createBoard(boardSize, mineNum).mineLocations);
+    const newBoard = createBoard(boardSize, mineNum);
+    setNonMineCount(boardSize * boardSize - mineNum);
+    setRemainFlagNum(mineNum);
+    setMineLocations(newBoard.mineLocations);
+    setBoard(newBoard.board);
   };
 
   const restartGame = () => {
-    {
-      /* -- TODO 5-2 -- */
-    }
-    {
-      /* Useful Hint: freshBoard() */
-    }
     freshBoard();
     setGameOver(false);
     setWin(false);
   };
 
-  // On Right Click / Flag Cell
   const updateFlag = (e, x, y) => {
-    // To not have a dropdown on right click
     e.preventDefault();
-    // Deep copy of a state
-    {
-      /* -- TODO 3-2 -- */
+    let newBoard = JSON.parse(JSON.stringify(board));
+    let newFlagNum = remainFlagNum;
+    if (newBoard[x][y].revealed === true) return;
+    if (newBoard[x][y].flagged !== true && newBoard[x][y].revealed !== true) {
+      newBoard[x][y].flagged = true;
+      newFlagNum--;
+    } else {
+      newBoard[x][y].flagged = false;
+      newFlagNum++;
     }
-    {
-      /* Useful Hint: A cell is going to be flagged. 'x' and 'y' are the xy-coordinate of the cell. */
-    }
-    {
-      /* Reminder: If the cell is already flagged, you should unflagged it. Also remember to update the board and the remainFlagNum. */
-    }
-    {
-      /* Reminder: The cell can be flagged only when it is not revealed. */
-    }
-    if (!board[x][y].revealed) {
-      if (board[x][y].flagged) {
-        setBoard(
-          board.map((row) => {
-            row.map((cell) => {
-              if (cell.x === x && cell.y === y) {
-                cell.flagged = false;
-              }
-              return cell;
-            });
-            return row;
-          })
-        );
-        setRemainFlagNum(remainFlagNum - 1);
-      } else {
-        setBoard(
-          board.map((row) => {
-            row.map((cell) => {
-              if (cell.x === x && cell.y === y) {
-                cell.flagged = true;
-              }
-              return cell;
-            });
-            return row;
-          })
-        );
-        setRemainFlagNum(remainFlagNum + 1);
-      }
-    }
+    setRemainFlagNum(newFlagNum);
+    setBoard(newBoard);
   };
 
   const revealCell = (x, y) => {
-    {
-      /* -- TODO 4-1 -- */
-    }
-    {
-      /* Reveal the cell */
-    }
-    {
-      /* Useful Hint: The function in reveal.js may be useful. You should consider if the cell you want to reveal is a location of mines or not. */
-    }
-    {
-      /* Reminder: Also remember to handle the condition that after you reveal this cell then you win the game. */
-    }
+    if (board[x][y].revealed || gameOver || board[x][y].flagged) return;
 
-    if (!board[x][y].revealed && !board[x][y].flagged) {
-      if (board[x][y].value === "💣") {
+    let newBoard = JSON.parse(JSON.stringify(board));
+    if (newBoard[x][y].value === "💣") {
+      for (let i = 0; i < mineLocations.length; i++) {
+        if (!newBoard[mineLocations[i][0]][mineLocations[i][1]].flagged)
+          newBoard[mineLocations[i][0]][mineLocations[i][1]].revealed = true;
+      }
+      setBoard(newBoard);
+      setGameOver(true);
+    } else {
+      let newRevealedBoard = revealed(newBoard, x, y, nonMineCount);
+      setBoard(newRevealedBoard.board);
+      setNonMineCount(newRevealedBoard.newNonMinesCount);
+      if (newRevealedBoard.newNonMinesCount === 0) {
+        console.log("win");
         setGameOver(true);
-      } else {
-        setBoard(
-          board.map((row) => {
-            row.map((cell) => {
-              if (cell.x === x && cell.y === y) {
-                cell.revealed = true;
-              }
-              return cell;
-            });
-            return row;
-          })
-        );
+        setWin(true);
       }
     }
-    // revealed(board, x, y, nonMineCount);
   };
 
   return (
     <div className="boardPage">
       <div className="boardWrapper">
-        {/* -- TODO 3-1 -- */}
-        {/* Useful Hint: The board is composed of BOARDSIZE*BOARDSIZE of Cell (2-dimention). So, nested 'map' is needed to implement the board.  */}
-        {/* Reminder: Remember to use the component <Cell> and <Dashboard>. See Cell.js and Dashboard.js for detailed information. */}
         {win === gameOver && (
           <div className="boardContainer">
             <Dashboard remainFlagNum={remainFlagNum} gameOver={gameOver} />
