@@ -82,25 +82,23 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
   return (
     <div className="boardPage">
       <div className="boardWrapper">
-        {win === gameOver && (
-          <div className="boardContainer">
-            <Dashboard remainFlagNum={remainFlagNum} gameOver={gameOver} />
-            {board.map((row, cnt) => (
-              <div id={`row${cnt}`} style={{ display: "flex" }}>
-                {row.map((cell, key) => (
-                  <Cell
-                    key={key}
-                    rowIdx={cell.x}
-                    colIdx={cell.y}
-                    detail={cell}
-                    updateFlag={updateFlag}
-                    revealCell={revealCell}
-                  />
-                ))}
-              </div>
-            ))}
-          </div>
-        )}
+        <div className="boardContainer">
+          <Dashboard remainFlagNum={remainFlagNum} gameOver={gameOver} />
+          {board.map((row, cnt) => (
+            <div id={`row${cnt}`} style={{ display: "flex" }}>
+              {row.map((cell, key) => (
+                <Cell
+                  key={key}
+                  rowIdx={cell.x}
+                  colIdx={cell.y}
+                  detail={cell}
+                  updateFlag={updateFlag}
+                  revealCell={revealCell}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
         {(win || gameOver) && (
           <Modal restartGame={restartGame} backToHome={backToHome} win={win} />
         )}
