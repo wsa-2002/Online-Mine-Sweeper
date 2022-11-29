@@ -7,7 +7,9 @@
 ****************************************************************************/
 
 import React, { useState } from "react";
+import GameParamsSetting from "./GameParamsSetting";
 import "./css/HomePage.css";
+import Popup from "reactjs-popup";
 
 const HomePage = ({
   startGameOnClick,
@@ -18,6 +20,7 @@ const HomePage = ({
 }) => {
   const [showPanel, setShowPanel] = useState(false); // A boolean variable. If true, the controlPanel will show.
   const [error, setError] = useState(false); // A boolean variable. If true, means that the numbers of mines and the board size are invalid to build a game.
+  const [showGameParamsSetting, setShowGameParamsSetting] = useState(false);
 
   const handleMineNum = (e) => {
     const isvalid = mineNumOnChange(e.target.value);
@@ -29,13 +32,39 @@ const HomePage = ({
     setError(isvalid);
   };
 
+  const handleCreateNewRoom = (e) => {
+    setShowGameParamsSetting(!showGameParamsSetting);
+  };
+
+  const handleEnterRandomRoom = (e) => {
+    setShowGameParamsSetting(!showGameParamsSetting);
+  };
+
+  const handleEnterRoomNumber = (e) => {
+    setShowGameParamsSetting(!showGameParamsSetting);
+  };
+
   return (
     <div className="HomeWrapper">
       <p className="title">MineSweeper</p>
-      <button className="btn" onClick={startGameOnClick}>
-        Start Game
-      </button>
+      {showGameParamsSetting && <GameParamsSetting></GameParamsSetting>}
       <div className="controlContainer">
+        <Popup
+          trigger={<button className="btn">Create New Room</button>}
+          position="center"
+        >
+          <GameParamsSetting></GameParamsSetting>
+        </Popup>
+        <button className="btn" onClick={handleEnterRandomRoom}>
+          Enter Random Room
+        </button>
+        <button className="btn" onClick={handleEnterRoomNumber}>
+          Enter Room Number
+        </button>
+        <button className="btn" onClick={startGameOnClick}>
+          Start Game
+        </button>
+
         <button className="btn" onClick={() => setShowPanel(!showPanel)}>
           Difficulty Adjustment
         </button>

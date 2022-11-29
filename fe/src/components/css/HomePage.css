@@ -20,6 +20,8 @@
     font-weight: 900;
     padding-top: 50px;
     color: #0f0f4b;
+    margin-top: 25px;
+    margin-bottom: 50px;
 }
 .btn{
     font-size: 30px;
@@ -30,7 +32,6 @@
     color: #0f0f4b;
     background-color: lightblue;
     border: 3px solid #0f0f4b;
-    
 }
 
 .btn:hover{
@@ -40,7 +41,8 @@
     border: 3px solid transparent;
 }
 .controlContainer{
-    
+    display: flex;
+    flex-direction: column;
 }
 .controlWrapper{
     background-color: lightblue;
