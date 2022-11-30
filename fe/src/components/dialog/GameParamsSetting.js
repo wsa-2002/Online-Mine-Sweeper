@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../css/dialog/GameParamsSetting.css";
 
-const GameParamsSetting = ({ close }) => {
+const GameParamsSetting = ({ close, startGame }) => {
   const [room, setRoom] = useState("PUBLIC");
   const [mineNum, setMineNum] = useState(10);
   const [boardSize, setBoardSize] = useState(8);
@@ -17,6 +17,8 @@ const GameParamsSetting = ({ close }) => {
       room_number: null,
     };
     console.log(data);
+    close();
+    startGame();
   };
 
   // const handleMineNum = (num) => {

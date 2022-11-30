@@ -3,26 +3,20 @@ import GameParamsSetting from "./dialog/GameParamsSetting";
 import "./css/SelectMode.css";
 import Popup from "reactjs-popup";
 
-const SelectMode = ({
-  startGameOnClick,
-  mineNumOnChange,
-  boardSizeOnChange,
-  mineNum,
-  boardSize,
-}) => {
+const SelectMode = ({ startGame }) => {
   const [showPanel, setShowPanel] = useState(false); // A boolean variable. If true, the controlPanel will show.
   const [error, setError] = useState(false); // A boolean variable. If true, means that the numbers of mines and the board size are invalid to build a game.
   const [showGameParamsSetting, setShowGameParamsSetting] = useState(false);
 
-  const handleMineNum = (e) => {
-    const isvalid = mineNumOnChange(e.target.value);
-    setError(isvalid);
-  };
+  // const handleMineNum = (e) => {
+  //   const isvalid = mineNumOnChange(e.target.value);
+  //   setError(isvalid);
+  // };
 
-  const handleBoardSize = (e) => {
-    const isvalid = boardSizeOnChange(e.target.value);
-    setError(isvalid);
-  };
+  // const handleBoardSize = (e) => {
+  //   const isvalid = boardSizeOnChange(e.target.value);
+  //   setError(isvalid);
+  // };
 
   const handleCreateNewRoom = (e) => {
     setShowGameParamsSetting(!showGameParamsSetting);
@@ -45,6 +39,7 @@ const SelectMode = ({
             close={() => {
               setShowGameParamsSetting(!showGameParamsSetting);
             }}
+            startGame={startGame}
           />
         </Popup>
         <button className="btn" onClick={handleCreateNewRoom}>
@@ -56,14 +51,14 @@ const SelectMode = ({
         <button className="btn" onClick={handleEnterRoomNumber}>
           Enter Room Number
         </button>
-        <button className="btn" onClick={startGameOnClick}>
+        {/* <button className="btn" onClick={handleStartGame}>
           Start Game
-        </button>
+        </button> */}
 
         <button className="btn" onClick={() => setShowPanel(!showPanel)}>
           Difficulty Adjustment
         </button>
-        {showPanel && (
+        {/*showPanel && (
           <div className="controlWrapper">
             {error && (
               <div className="error" style={{ color: "#880000" }}>
@@ -114,7 +109,7 @@ const SelectMode = ({
               </div>
             </div>
           </div>
-        )}
+                )*/}
       </div>
     </div>
   );

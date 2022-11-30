@@ -6,7 +6,7 @@
   Copyright     [ 2021 10 ]
 ****************************************************************************/
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./MineSweeper.css";
 import Board from "../components/Board";
 import SelectMode from "../components/SelectMode";
@@ -44,20 +44,25 @@ const MineSweeper = () => {
     setBoardSize(8);
   };
 
+  useEffect(() => {
+    console.log(startGame);
+  }, [startGame]);
+
   return (
     <div className="mineSweeper">
       {selectMode ? (
-        <SelectMode
-          startGameOnClick={startGameOnClick}
-          mineNumOnChange={mineNumOnChange}
-          boardSizeOnChange={boardSizeOnChange}
-          mineNum={mineNum}
-          boardSize={boardSize}
-        />
+        startGame ? (
+          <Board
+            boardSize={boardSize}
+            mineNum={mineNum}
+            backToHome={backToHomeOnClick}
+          />
+        ) : (
+          <SelectMode startGame={startGameOnClick} />
+        )
       ) : (
         <HomePage moveOnToSelectMode={() => setSelectMode(true)} />
       )}
-      {}
       {/*startGame ? (
       //   <Board
       //     boardSize={boardSize}
