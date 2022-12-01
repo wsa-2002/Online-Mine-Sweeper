@@ -25,13 +25,13 @@
   background-color: lightblue;
   border: 3px solid #0f0f4b;
 }
-
 .btn:hover{
   cursor: pointer;
   background-color: #0f0f4b;
   color: lightblue;
   border: 3px solid transparent;
 }
+
 .controlContainer{
   display: flex;
   flex-direction: column;
@@ -51,7 +51,6 @@
   font-size: 20px;
   font-weight: 300;
 }
-
 
 .controlCol{
   display: inline-block;
@@ -96,4 +95,13 @@
       background:#0f0f4b;
   }
 
+}
+
+.blurredBackground {
+  opacity: 0.9;
+  background-color: white;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  transform: translate(-30vw, -30vh);
 }

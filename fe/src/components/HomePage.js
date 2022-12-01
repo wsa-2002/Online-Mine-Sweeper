@@ -20,6 +20,7 @@ const HomePage = ({ moveOnToSelectMode }) => {
           position="center"
           closeOnDocumentClick={false}
         >
+          <div className="blurredBackground" />
           <UsernameSetting close={handleUsernameSubmit} />
         </Popup>
         <button className="btn" onClick={() => setShowUsernameSetting(true)}>

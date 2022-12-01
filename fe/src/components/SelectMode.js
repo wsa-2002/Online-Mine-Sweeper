@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import GameParamsSetting from "./dialog/GameParamsSetting";
 import "./css/SelectMode.css";
 import Popup from "reactjs-popup";
+import EnterRoomNumber from "./dialog/EnterRoomNumber";
 
 const SelectMode = ({ startGame }) => {
   const [showGameParamsSetting, setShowGameParamsSetting] = useState(false);
+  const [showEnterRoomNumber, setShowEnterRoomNumber] = useState(false);
 
   const handleCreateNewRoom = (e) => {
     setShowGameParamsSetting(!showGameParamsSetting);
@@ -12,10 +14,12 @@ const SelectMode = ({ startGame }) => {
 
   const handleEnterRandomRoom = (e) => {
     setShowGameParamsSetting(!showGameParamsSetting);
+    // TODO: send username
   };
 
   const handleEnterRoomNumber = (e) => {
-    setShowGameParamsSetting(!showGameParamsSetting);
+    setShowEnterRoomNumber(!showEnterRoomNumber);
+    // TODO: send username
   };
 
   return (
@@ -27,6 +31,7 @@ const SelectMode = ({ startGame }) => {
           position="center"
           closeOnDocumentClick={false}
         >
+          <div className="blurredBackground" />
           <GameParamsSetting
             close={() => {
               setShowGameParamsSetting(!showGameParamsSetting);
@@ -40,6 +45,19 @@ const SelectMode = ({ startGame }) => {
         <button className="btn" onClick={handleEnterRandomRoom}>
           Enter Random Room
         </button>
+        <Popup
+          open={showEnterRoomNumber}
+          position="center"
+          closeOnDocumentClick={false}
+        >
+          <div className="blurredBackground" />
+          <EnterRoomNumber
+            close={() => {
+              setShowEnterRoomNumber(!showEnterRoomNumber);
+            }}
+            startGame={startGame}
+          />
+        </Popup>
         <button className="btn" onClick={handleEnterRoomNumber}>
           Enter Room Number
         </button>

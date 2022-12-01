@@ -97,3 +97,12 @@
     }
 
 }
+
+.blurredBackground {
+    opacity: 0.9;
+    background-color: white;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    transform: translate(-30vw, -30vh);
+  }
