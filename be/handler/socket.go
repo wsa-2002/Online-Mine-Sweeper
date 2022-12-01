@@ -29,7 +29,7 @@ type wsClients struct {
 }
 
 var (
-	rooms      map[int][]wsClients
+	rooms      = make(map[int][]wsClients)
 	socketData Request
 	mutex      sync.Mutex
 )
