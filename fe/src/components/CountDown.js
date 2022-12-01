@@ -21,8 +21,6 @@ export default function CountDown({ startTime, setCountDown, setGameStart }) {
 
 	const timeDiff = (now, start) => {
 		const gap = start - now;
-		console.log(gap / 1000);
-		console.log(Math.floor(gap / 1000) + 1);
 		return Math.floor(gap / 1000) + 1;
 	};
 
