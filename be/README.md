@@ -16,6 +16,10 @@ And fill in necessary environment variables in `.env`, then run
 
 ```shell
 docker-compose up -d
+```
+You may check whether the database is up from `localhost:8082`, and then create a database called `network-project`.
+And then run
+```shell
 go mod tidy
 go run main.go
 ```
