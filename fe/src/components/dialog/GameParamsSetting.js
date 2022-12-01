@@ -1,36 +1,34 @@
 import React, { useState, useEffect } from "react";
 import "../css/dialog/GameParamsSetting.css";
 
-const GameParamsSetting = ({ close, startGame }) => {
-  const [room, setRoom] = useState("PUBLIC");
-  const [mineNum, setMineNum] = useState(10);
-  const [boardSize, setBoardSize] = useState(8);
-  const [timeLimit, setTimeLimit] = useState(60);
+const GameParamsSetting = ({
+  close,
+  startGame,
+  roomType,
+  setRoomType,
+  mineNum,
+  setMineNum,
+  boardSize,
+  setBoardSize,
+  timeLimit,
+  setTimeLimit,
+}) => {
   const [submitDisabled, setSubmitDisabled] = useState(true);
   const [error, setError] = useState("");
 
   const handleStartGame = () => {
-    const data = {
-      room_option: "NEW",
-      board_size: boardSize,
-      mine_num: mineNum,
-      time_limit: timeLimit,
-      room_type: room,
-      room_number: null,
-    };
-    console.log("data for setup: ", data);
     close(); // close GameSetting dialog
-    startGame();
+    startGame(); // submit data for setup and start game
   };
 
   // handle disabled status of buttons
   useEffect(() => {
-    if (room && mineNum && boardSize && timeLimit) {
+    if (roomType && mineNum && boardSize && timeLimit) {
       setSubmitDisabled(false);
     } else {
       setSubmitDisabled(true);
     }
-  }, [room, mineNum, boardSize, timeLimit]);
+  }, [roomType, mineNum, boardSize, timeLimit]);
 
   // handle error message displayed
   useEffect(() => {
@@ -55,8 +53,8 @@ const GameParamsSetting = ({ close, startGame }) => {
             <input
               type="radio"
               value="PUBLIC"
-              checked={room === "PUBLIC"}
-              onChange={() => setRoom("PUBLIC")}
+              checked={roomType === "PUBLIC"}
+              onChange={() => setRoomType("PUBLIC")}
               className="radio"
             />
             <p className="radio_label_text">Public</p>
@@ -65,8 +63,8 @@ const GameParamsSetting = ({ close, startGame }) => {
             <input
               type="radio"
               value="PRIVATE"
-              checked={room === "PRIVATE"}
-              onChange={() => setRoom("PRIVATE")}
+              checked={roomType === "PRIVATE"}
+              onChange={() => setRoomType("PRIVATE")}
               className="radio"
             />
             <p className="radio_label_text">Private</p>

@@ -1,25 +1,63 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import GameParamsSetting from "./dialog/GameParamsSetting";
 import "./css/SelectMode.css";
 import Popup from "reactjs-popup";
 import EnterRoomNumber from "./dialog/EnterRoomNumber";
 
-const SelectMode = ({ startGame }) => {
+const SelectMode = ({
+  roomOption,
+  setRoomOption,
+  roomType,
+  setRoomType,
+  mineNum,
+  setMineNum,
+  boardSize,
+  setBoardSize,
+  timeLimit,
+  setTimeLimit,
+  roomNumber,
+  setRoomNumber,
+  startGame,
+}) => {
   const [showGameParamsSetting, setShowGameParamsSetting] = useState(false);
   const [showEnterRoomNumber, setShowEnterRoomNumber] = useState(false);
 
-  const handleCreateNewRoom = (e) => {
+  const handleCreateNewRoom = () => {
+    setRoomOption("NEW");
     setShowGameParamsSetting(!showGameParamsSetting);
   };
 
-  const handleEnterRandomRoom = (e) => {
+  const handleEnterRandomRoom = () => {
+    setRoomOption("RANDOM");
+    setRoomType(null);
+    setBoardSize(null);
+    setMineNum(null);
+    setTimeLimit(null);
+    setRoomNumber(null);
     setShowGameParamsSetting(!showGameParamsSetting);
-    // TODO: send username
   };
+  // for enter random room, only start game after states are set
+  useEffect(() => {
+    if (roomOption === "RANDOM") {
+      startGame(); // submit data for setup and start game
+    }
+  }, [
+    roomOption,
+    roomType,
+    boardSize,
+    mineNum,
+    timeLimit,
+    roomNumber,
+    startGame,
+  ]);
 
-  const handleEnterRoomNumber = (e) => {
+  const handleEnterRoomNumber = () => {
+    setRoomOption("ASSIGN");
+    setRoomType(null);
+    setBoardSize(null);
+    setMineNum(null);
+    setTimeLimit(null);
     setShowEnterRoomNumber(!showEnterRoomNumber);
-    // TODO: send username
   };
 
   return (
@@ -37,6 +75,14 @@ const SelectMode = ({ startGame }) => {
               setShowGameParamsSetting(!showGameParamsSetting);
             }}
             startGame={startGame}
+            roomType={roomType}
+            setRoomType={setRoomType}
+            mineNum={mineNum}
+            setMineNum={setMineNum}
+            boardSize={boardSize}
+            setBoardSize={setBoardSize}
+            timeLimit={timeLimit}
+            setTimeLimit={setTimeLimit}
           />
         </Popup>
         <button className="btn" onClick={handleCreateNewRoom}>
@@ -56,6 +102,8 @@ const SelectMode = ({ startGame }) => {
               setShowEnterRoomNumber(!showEnterRoomNumber);
             }}
             startGame={startGame}
+            roomNumber={roomNumber}
+            setRoomNumber={setRoomNumber}
           />
         </Popup>
         <button className="btn" onClick={handleEnterRoomNumber}>

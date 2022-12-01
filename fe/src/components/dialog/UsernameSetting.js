@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "../css/dialog/UsernameSetting.css";
 
-const UsernameSetting = ({ close }) => {
-  const [username, setUsername] = useState(null);
+const UsernameSetting = ({ close, username, setUsername }) => {
   const [submitDisabled, setSubmitDisabled] = useState(true);
 
   const handleSubmit = () => {
-    console.log("username: ", username);
-    // TODO: send username to somewhere
+    setUsername(username);
     close(); // close UsernameSetting dialog and show select mode (hide home page)
   };
 

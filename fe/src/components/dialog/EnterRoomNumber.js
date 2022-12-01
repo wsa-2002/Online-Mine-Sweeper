@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from "react";
 import "../css/dialog/UsernameSetting.css";
 
-const EnterRoomNumber = ({ close, startGame }) => {
-  const [roomNumber, setRoomNumber] = useState(null);
+const EnterRoomNumber = ({ close, startGame, roomNumber, setRoomNumber }) => {
   const [submitDisabled, setSubmitDisabled] = useState(true);
 
   const handleSubmit = () => {
-    console.log("roomNumber: ", roomNumber);
-    // TODO: send username and roomNumber to somewhere
     close(); // close EnterRoomNumber dialog
     startGame();
   };

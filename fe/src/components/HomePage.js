@@ -3,7 +3,7 @@ import "./css/HomePage.css";
 import Popup from "reactjs-popup";
 import UsernameSetting from "./dialog/UsernameSetting";
 
-const HomePage = ({ moveOnToSelectMode }) => {
+const HomePage = ({ moveOnToSelectMode, username, setUsername }) => {
   const [showUsernameSetting, setShowUsernameSetting] = useState(false);
 
   const handleUsernameSubmit = () => {
@@ -21,7 +21,11 @@ const HomePage = ({ moveOnToSelectMode }) => {
           closeOnDocumentClick={false}
         >
           <div className="blurredBackground" />
-          <UsernameSetting close={handleUsernameSubmit} />
+          <UsernameSetting
+            close={handleUsernameSubmit}
+            username={username}
+            setUsername={setUsername}
+          />
         </Popup>
         <button className="btn" onClick={() => setShowUsernameSetting(true)}>
           Start
