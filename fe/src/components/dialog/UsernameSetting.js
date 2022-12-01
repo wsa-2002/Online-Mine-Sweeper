@@ -7,7 +7,7 @@ const UsernameSetting = ({ close }) => {
   const handleSubmit = () => {
     console.log(username);
     // TODO: send username to somewhere
-    close();
+    close(); // close UsernameSetting dialog and show select mode (hide home page)
   };
 
   //TODO: disabled button if name is empty

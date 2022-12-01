@@ -34,7 +34,11 @@ const SelectMode = ({ startGame }) => {
     <div className="HomeWrapper">
       <p className="title">MineSweeper</p>
       <div className="controlContainer">
-        <Popup open={showGameParamsSetting} position="center">
+        <Popup
+          open={showGameParamsSetting}
+          position="center"
+          closeOnDocumentClick={false}
+        >
           <GameParamsSetting
             close={() => {
               setShowGameParamsSetting(!showGameParamsSetting);

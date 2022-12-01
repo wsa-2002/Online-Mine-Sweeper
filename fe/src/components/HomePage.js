@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./css/HomePage.css";
 import Popup from "reactjs-popup";
 import UsernameSetting from "./dialog/UsernameSetting";
@@ -6,27 +6,25 @@ import UsernameSetting from "./dialog/UsernameSetting";
 const HomePage = ({ moveOnToSelectMode }) => {
   const [showUsernameSetting, setShowUsernameSetting] = useState(false);
 
-  // const handleMineNum = (e) => {
-  //   const isvalid = mineNumOnChange(e.target.value);
-  //   setError(isvalid);
-  // };
+  const handleUsernameSubmit = () => {
+    setShowUsernameSetting(false);
+    moveOnToSelectMode();
+  };
 
-  // const handleBoardSize = (e) => {
-  //   const isvalid = boardSizeOnChange(e.target.value);
-  //   setError(isvalid);
-  // };
+  useEffect(() => {
+    console.log(showUsernameSetting);
+  }, [showUsernameSetting]);
 
   return (
     <div className="HomeWrapper">
       <p className="title">MineSweeper</p>
       <div className="controlContainer">
-        <Popup open={showUsernameSetting} position="center">
-          <UsernameSetting
-            close={() => {
-              setShowUsernameSetting(false);
-              moveOnToSelectMode();
-            }}
-          />
+        <Popup
+          open={showUsernameSetting}
+          position="center"
+          closeOnDocumentClick={false}
+        >
+          <UsernameSetting close={handleUsernameSubmit} />
         </Popup>
         <button className="btn" onClick={() => setShowUsernameSetting(true)}>
           Start
