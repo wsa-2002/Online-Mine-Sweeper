@@ -9,7 +9,7 @@ const sendData = async (data) => {
 };
 
 const sendSetup = (data) => {
-	sendData({ task: "setup", data });
+	sendData({ task: "setup", ...data });
 };
 
 const sendReady = (data) => {
