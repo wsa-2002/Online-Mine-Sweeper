@@ -6,7 +6,7 @@ const UsernameSetting = ({ close }) => {
   const [submitDisabled, setSubmitDisabled] = useState(true);
 
   const handleSubmit = () => {
-    console.log(username);
+    console.log("username: ", username);
     // TODO: send username to somewhere
     close(); // close UsernameSetting dialog and show select mode (hide home page)
   };

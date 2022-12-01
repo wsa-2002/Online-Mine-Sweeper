@@ -7,6 +7,7 @@ const GameParamsSetting = ({ close, startGame }) => {
   const [boardSize, setBoardSize] = useState(8);
   const [timeLimit, setTimeLimit] = useState(60);
   const [submitDisabled, setSubmitDisabled] = useState(true);
+  const [error, setError] = useState("");
 
   const handleStartGame = () => {
     const data = {
@@ -17,11 +18,12 @@ const GameParamsSetting = ({ close, startGame }) => {
       room_type: room,
       room_number: null,
     };
-    console.log(data);
-    close();
+    console.log("data for setup: ", data);
+    close(); // close GameSetting dialog
     startGame();
   };
 
+  // handle disabled status of buttons
   useEffect(() => {
     if (room && mineNum && boardSize && timeLimit) {
       setSubmitDisabled(false);
@@ -30,29 +32,18 @@ const GameParamsSetting = ({ close, startGame }) => {
     }
   }, [room, mineNum, boardSize, timeLimit]);
 
-  // const handleMineNum = (num) => {
-  //   if (num < 1) {
-  //     setMineNum(1);
-  //   } else if (num > 50) {
-  //     setMineNum(50);
-  //   } else {
-  //     setMineNum(num);
-  //   }
-  //   console.log(mineNum);
-  // };
-  // useEffect(
-  //   (mineNum) => {
-  //     if (mineNum < 1) {
-  //       setMineNum(1);
-  //     } else if (mineNum > 50) {
-  //       setMineNum(50);
-  //     } else {
-  //       setMineNum(mineNum);
-  //     }
-  //     console.log(mineNum);
-  //   },
-  //   [mineNum]
-  // );
+  // handle error message displayed
+  useEffect(() => {
+    if (mineNum && boardSize) {
+      if (mineNum < 1 || mineNum > 50) {
+        setError("Mine number should be between 1 and 50.");
+      } else if (boardSize < 8 || boardSize > 20) {
+        setError("Board size should be between 8 and 20.");
+      } else if (mineNum > boardSize * boardSize) {
+        setError("The number of mines should be smaller than the board area!");
+      }
+    }
+  }, [mineNum, boardSize]);
 
   return (
     <div className="dialog">
@@ -106,6 +97,7 @@ const GameParamsSetting = ({ close, startGame }) => {
           placeholder="a number from 60 to 180"
         />
       </div>
+      {error && <p style={{ marginBottom: "0px" }}>{error}</p>}
       <div>
         <button className="dialogBtn" onClick={close}>
           Cancel
