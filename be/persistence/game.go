@@ -2,7 +2,6 @@ package persistence
 
 import (
 	"context"
-	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -54,7 +53,6 @@ func GetUserGame(username string) (*Game, error) {
 	var userGame *Game
 	err := collection.FindOne(context.TODO(), filter).Decode(&userGame)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	return userGame, nil
@@ -104,7 +102,7 @@ func GetRandomGame() (*Game, error) {
 func AddUserIntoGame(username string, roomId int) error {
 	collection := DB.Collection(gameCollectionName)
 	filter := bson.D{{"room_id", roomId}}
-	update := bson.D{{"username2", username}}
+	update := bson.D{{"$set", bson.D{{"username2", username}}}}
 	_, err := collection.UpdateOne(context.TODO(), filter, update)
 	return err
 }

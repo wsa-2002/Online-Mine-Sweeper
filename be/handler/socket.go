@@ -1,11 +1,9 @@
 package handler
 
 import (
-	"be/persistence"
 	"be/service"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"net/http"
@@ -76,8 +74,15 @@ func SocketHandler(c *gin.Context) {
 			handleResponse(ws, "setup", setUpResult, setUpErr)
 			if setUpErr == nil {
 				handleConnections(ws, setUpResult.RoomNumber)
+				notifyUser(username, setUpResult.RoomNumber, "setup", service.SetUpOutput{
+					BoardSize:     setUpResult.BoardSize,
+					MineNum:       setUpResult.MineNum,
+					TimeLimit:     setUpResult.TimeLimit,
+					RoomType:      setUpResult.RoomType,
+					RoomNumber:    setUpResult.RoomNumber,
+					RivalUsername: username,
+				})
 			}
-			fmt.Println(persistence.GetRandomGame())
 		case "ready":
 			var data service.ReadyInput
 			if err := json.Unmarshal(*socketData.Data, &data); err != nil {
@@ -131,5 +136,13 @@ func handleResponse(c *websocket.Conn, task string, data interface{}, err error)
 			data,
 			"",
 		})
+	}
+}
+
+func notifyUser(sender string, roomId int, task string, data interface{}) {
+	for _, c := range rooms[roomId] {
+		if c.Username != sender {
+			handleResponse(c.Conn, task, data, nil)
+		}
 	}
 }
