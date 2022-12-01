@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 // client side
-const client = new WebSocket("ws://localhost:8000");
+const client = new WebSocket("ws://localhost:8000/socket");
 
 const username = "whoami"; // string
 
