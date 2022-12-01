@@ -1,0 +1,20 @@
+.countDown{
+  font-size: 50px;
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.countDownContent{
+  margin: auto 40%;
+  justify-content: center;
+  text-align: center;
+  height: 25%;
+  width: auto;
+  padding: auto;
+  background-color: lightblue;
+  border-radius: 25px;
+  
+}
