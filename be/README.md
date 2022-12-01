@@ -13,7 +13,9 @@ cp .env.example .env
 cp docker-compose.yaml.example docker-compose.yaml
 ```
 And fill in necessary environment variables in `.env`, then run
+
 ```shell
+docker-compose up -d
 go mod tidy
 go run main.go
 ```
