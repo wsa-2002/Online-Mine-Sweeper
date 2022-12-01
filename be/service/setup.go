@@ -27,6 +27,9 @@ type SetUpOutput struct {
 const MaxRoomId = 1000
 
 func SetUp(username string, data SetUpInput) (*SetUpOutput, error) {
+	if persistence.UserIsInGame(username) {
+		return nil, errors.New("username is used")
+	}
 	switch data.RoomOption {
 	case "NEW":
 		roomId := rand.Intn(MaxRoomId)
@@ -42,8 +45,32 @@ func SetUp(username string, data SetUpInput) (*SetUpOutput, error) {
 			RoomNumber: gameInfo.RoomId,
 		}, nil
 	case "RANDOM":
-		return nil, nil
+		gameInfo, err := persistence.GetRandomGame()
+		if err != nil {
+			return nil, err
+		}
+		err = persistence.AddUserIntoGame(username, gameInfo.RoomId)
+		if err != nil {
+			return nil, err
+		}
+		return &SetUpOutput{
+			BoardSize:     gameInfo.BoardSize,
+			MineNum:       gameInfo.MineNum,
+			TimeLimit:     gameInfo.TimeLimit,
+			RoomType:      gameInfo.RoomType,
+			RoomNumber:    gameInfo.RoomId,
+			RivalUsername: gameInfo.User2,
+		}, nil
 	case "ASSIGN":
+		game, err := persistence.GetGameByRoomId(data.RoomNumber)
+		if game.IsFinished || game.RoomType == "PRIVATE" {
+			return nil, errors.New("room not found")
+		}
+		err = persistence.AddUserIntoGame(username, data.RoomNumber)
+		if err != nil {
+			return nil, err
+		}
+
 		return nil, nil
 	default:
 		return nil, errors.New("invalid room type")
