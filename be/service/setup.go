@@ -49,6 +49,9 @@ func SetUp(username string, data SetUpInput) (*SetUpOutput, error) {
 		if err != nil {
 			return nil, err
 		}
+		if gameInfo == nil {
+			return nil, errors.New("no rooms available")
+		}
 		err = persistence.AddUserIntoGame(username, gameInfo.RoomId)
 		if err != nil {
 			return nil, err
