@@ -34,12 +34,18 @@ const GameParamsSetting = ({
   useEffect(() => {
     if (mineNum && boardSize) {
       if (mineNum < 1 || mineNum > 50) {
-        setError("Mine number should be between 1 and 50.");
+        setError("⚠️ Mine number should be between 1 and 50.");
       } else if (boardSize < 8 || boardSize > 20) {
-        setError("Board size should be between 8 and 20.");
+        setError("⚠️ Board size should be between 8 and 20.");
       } else if (mineNum > boardSize * boardSize) {
-        setError("The number of mines should be smaller than the board area!");
+        setError(
+          "⚠️ The number of mines should be smaller than the board area!"
+        );
+      } else {
+        setError(null);
       }
+    } else {
+      setError(null);
     }
   }, [mineNum, boardSize]);
 
