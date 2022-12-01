@@ -1,13 +1,37 @@
 package handler
 
 import (
-	"be/persistence"
-	"fmt"
-	"github.com/bitly/go-simplejson"
+	"be/service"
+	"encoding/json"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"net/http"
+	"sync"
+)
+
+type Response struct {
+	Task  string      `json:"task"`
+	Data  interface{} `json:"data"`
+	Error error       `json:"error,omitempty"`
+}
+
+type Request struct {
+	Task     string           `json:"task"`
+	Username string           `json:"username"`
+	Data     *json.RawMessage `json:"data"`
+}
+
+type wsClients struct {
+	Conn       *websocket.Conn `json:"conn"`
+	Username   string          `json:"username"`
+	RoomNumber int             `json:"room_number,omitempty"`
+}
+
+var (
+	rooms      map[int][]wsClients
+	socketData Request
+	mutex      sync.Mutex
 )
 
 func SocketHandler(c *gin.Context) {
@@ -37,30 +61,95 @@ func SocketHandler(c *gin.Context) {
 		}
 
 		//var socketData map[string]interface{}
-		socketData, err := simplejson.NewJson(msg)
-		if err != nil {
-			panic(err)
+		if err := json.Unmarshal(msg, &socketData); err != nil {
+			err = ws.WriteJSON(Response{
+				"error",
+				nil,
+				err,
+			})
 		}
-		//fmt.Println(socketData.Get("type").MustString())
-		switch socketData.Get("type").MustString() {
-		case "setUser":
-			data := socketData.Get("data")
-			result := persistence.CreateUser(data.Get("username").MustString())
-			fmt.Println(result)
-			err = ws.WriteJSON(struct {
-				UserId primitive.ObjectID `json:"user_id"`
-			}{
-				result.InsertedID.(primitive.ObjectID),
+		username := socketData.Username
+		switch socketData.Task {
+		case "setup":
+			var data service.SetUpInput
+			if err := json.Unmarshal(*socketData.Data, &data); err != nil {
+				err = ws.WriteJSON(Response{
+					"setup",
+					nil,
+					err,
+				})
+			}
+			setUpResult, setUpErr := service.SetUp(username, data)
+			handleConnections(ws, setUpResult.RoomNumber)
+			err = ws.WriteJSON(Response{
+				"setup",
+				setUpResult,
+				setUpErr,
+			})
+		case "ready":
+			var data service.ReadyInput
+			if err := json.Unmarshal(*socketData.Data, &data); err != nil {
+				err = ws.WriteJSON(Response{
+					"ready",
+					nil,
+					err,
+				})
+			}
+			readyResult, readyErr := service.HandleReady(username, data)
+			err = ws.WriteJSON(Response{
+				"ready",
+				readyResult,
+				readyErr,
+			})
+		case "action":
+			var data service.ActionInput
+			if err := json.Unmarshal(*socketData.Data, &data); err != nil {
+				err = ws.WriteJSON(Response{
+					"ready",
+					nil,
+					err,
+				})
+			}
+			actionResult, actionErr := service.HandleAction(username, data)
+			err = ws.WriteJSON(Response{
+				"update_board",
+				actionResult,
+				actionErr,
+			})
+		case "check_status":
+			var data service.CheckStatusInput
+			if err := json.Unmarshal(*socketData.Data, &data); err != nil {
+				err = ws.WriteJSON(Response{
+					"check_status",
+					nil,
+					err,
+				})
+			}
+			checkStatusResult, checkStatusErr := service.CheckStatus(username, data)
+			err = ws.WriteJSON(Response{
+				"check_status",
+				checkStatusResult,
+				checkStatusErr,
 			})
 		default:
-			err = ws.WriteJSON(struct {
-				Reply string `json:"reply"`
-			}{
-				"no such action",
+			err = ws.WriteJSON(Response{
+				socketData.Task,
+				nil,
+				errors.New("invalid task type"),
 			})
 		}
 		if err != nil {
 			panic(err)
 		}
 	}
+}
+
+func handleConnections(c *websocket.Conn, roomNumber int) {
+	mutex.Lock()
+	rooms[roomNumber] = append(rooms[roomNumber], wsClients{
+		c,
+		socketData.Username,
+		roomNumber,
+	})
+	mutex.Unlock()
 }
