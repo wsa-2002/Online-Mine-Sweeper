@@ -57,6 +57,7 @@ const MineSweeper = () => {
             boardSize={boardSize}
             mineNum={mineNum}
             backToHome={backToHomeOnClick}
+            timeLimit={timeLimit}
           />
         ) : (
           <SelectMode
