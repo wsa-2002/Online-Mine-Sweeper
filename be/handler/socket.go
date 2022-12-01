@@ -89,7 +89,13 @@ func SocketHandler(c *gin.Context) {
 				handleResponse(ws, "ready", nil, err)
 			}
 			readyResult, readyErr := service.HandleReady(username, data)
-			handleResponse(ws, "ready", readyResult, readyErr)
+			if readyErr != nil {
+				handleResponse(ws, "ready", readyResult, readyErr)
+			}
+			if readyResult != nil {
+				handleResponse(ws, "ready", readyResult, readyErr)
+				notifyUser(username, data.RoomNumber, "ready", readyResult)
+			}
 		case "action":
 			var data service.ActionInput
 			if err := json.Unmarshal(*socketData.Data, &data); err != nil {
