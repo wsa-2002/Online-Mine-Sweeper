@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./css/HomePage.css";
 import Popup from "reactjs-popup";
 import UsernameSetting from "./dialog/UsernameSetting";
@@ -10,10 +10,6 @@ const HomePage = ({ moveOnToSelectMode }) => {
     setShowUsernameSetting(false);
     moveOnToSelectMode();
   };
-
-  useEffect(() => {
-    console.log(showUsernameSetting);
-  }, [showUsernameSetting]);
 
   return (
     <div className="HomeWrapper">

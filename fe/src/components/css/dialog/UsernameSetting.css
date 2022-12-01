@@ -37,6 +37,16 @@
   background-color: #0f0f4b;
   border: 3px solid #0f0f4b;
 }
+.dialogBtn:disabled {
+  font-size: 25px;
+  padding: 10px 30px;
+  border: transparent;
+  border-radius: 15px;
+  margin: 35px 20px 0px 20px;
+  color: rgb(244, 242, 242);
+  background-color: rgb(198, 198, 198);
+  border: 3px solid rgb(198, 198, 198);
+}
 
 input {
   width: 200px;

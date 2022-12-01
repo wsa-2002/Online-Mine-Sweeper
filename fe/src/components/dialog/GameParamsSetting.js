@@ -6,6 +6,7 @@ const GameParamsSetting = ({ close, startGame }) => {
   const [mineNum, setMineNum] = useState(10);
   const [boardSize, setBoardSize] = useState(8);
   const [timeLimit, setTimeLimit] = useState(60);
+  const [submitDisabled, setSubmitDisabled] = useState(true);
 
   const handleStartGame = () => {
     const data = {
@@ -20,6 +21,14 @@ const GameParamsSetting = ({ close, startGame }) => {
     close();
     startGame();
   };
+
+  useEffect(() => {
+    if (room && mineNum && boardSize && timeLimit) {
+      setSubmitDisabled(false);
+    } else {
+      setSubmitDisabled(true);
+    }
+  }, [room, mineNum, boardSize, timeLimit]);
 
   // const handleMineNum = (num) => {
   //   if (num < 1) {
@@ -76,6 +85,7 @@ const GameParamsSetting = ({ close, startGame }) => {
       <div className="alignedText">
         <p className="alignedTextLeft">Mine Number</p>
         <input
+          defaultValue={mineNum}
           onChange={(e) => setMineNum(e.target.value)}
           placeholder="a number from 1 to 50"
         />
@@ -83,6 +93,7 @@ const GameParamsSetting = ({ close, startGame }) => {
       <div className="alignedText">
         <p className="alignedTextLeft">Board Size</p>
         <input
+          defaultValue={boardSize}
           onChange={(e) => setBoardSize(e.target.value)}
           placeholder="a number from 8 to 20"
         />
@@ -90,6 +101,7 @@ const GameParamsSetting = ({ close, startGame }) => {
       <div className="alignedText">
         <p className="alignedTextLeft">Time Limited</p>
         <input
+          defaultValue={timeLimit}
           onChange={(e) => setTimeLimit(e.target.value)}
           placeholder="a number from 60 to 180"
         />
@@ -98,7 +110,11 @@ const GameParamsSetting = ({ close, startGame }) => {
         <button className="dialogBtn" onClick={close}>
           Cancel
         </button>
-        <button className="dialogBtn" onClick={handleStartGame}>
+        <button
+          className="dialogBtn"
+          onClick={handleStartGame}
+          disabled={submitDisabled}
+        >
           Start Game
         </button>
       </div>
