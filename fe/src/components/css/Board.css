@@ -34,3 +34,30 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+.btnReady{
+    font-size: 20px;
+    padding: 10px 20px;
+    border: transparent;
+    border-radius: 25px;
+    margin: 20px auto;
+    color: #0f0f4b;
+    background-color: lightblue;
+    border: 3px solid #0f0f4b;
+    position: absolute;
+    left: 0%;
+}
+
+.btnReady:hover:not(:disabled){
+    cursor: pointer;
+    background-color: #0f0f4b;
+    color: lightblue;
+    border: 3px solid transparent;
+}
+
+.btnReady:disabled{
+    cursor: pointer;
+    background-color: #cccccc;
+    color: #666666;
+    border: 3px solid transparent;
+}

@@ -5,10 +5,13 @@ import (
 	"be/persistence"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"math/rand"
 	"os"
+	"time"
 )
 
 func main() {
+	rand.Seed(time.Now().UnixNano())
 	envErr := godotenv.Load()
 	if envErr != nil {
 		panic(envErr)
@@ -43,8 +46,8 @@ func ServeHTTP() {
 
 		public := g.Group("/socket")
 		public.GET("", handler.SocketHandler)
-
-		if err := g.Run(":8000"); err != nil {
+		serviceAddress := os.Getenv("SERVICE_ADDRESS")
+		if err := g.Run(serviceAddress); err != nil {
 			panic(err)
 		}
 	}()
