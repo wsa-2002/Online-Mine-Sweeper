@@ -8,6 +8,7 @@ import (
 	"github.com/gorilla/websocket"
 	"net/http"
 	"sync"
+	"time"
 )
 
 type Response struct {
@@ -56,6 +57,7 @@ func SocketHandler(c *gin.Context) {
 
 	for {
 		_, msg, err := ws.ReadMessage()
+		requestTime := time.Now()
 		if err != nil {
 			panic(err)
 		}
@@ -101,8 +103,9 @@ func SocketHandler(c *gin.Context) {
 			if err := json.Unmarshal(*socketData.Data, &data); err != nil {
 				handleResponse(ws, "ready", nil, err)
 			}
-			actionResult, actionErr := service.HandleAction(username, data)
+			actionResult, actionErr := service.HandleAction(username, data, requestTime)
 			handleResponse(ws, "update_board", actionResult, actionErr)
+			notifyUser(username, data.RoomNumber, "update_board", actionResult)
 		case "check_status":
 			var data service.CheckStatusInput
 			if err := json.Unmarshal(*socketData.Data, &data); err != nil {
@@ -114,7 +117,7 @@ func SocketHandler(c *gin.Context) {
 			handleResponse(ws, socketData.Task, nil, errors.New("invalid task type"))
 		}
 		if err != nil {
-			panic(err)
+			handleResponse(ws, socketData.Task, nil, err)
 		}
 	}
 }
