@@ -6,8 +6,8 @@ type CheckStatusInput struct {
 
 type CheckStatusOutput struct {
 	Status   string      `json:"status"`
-	Winner   string      `json:"winner,omitempty"`
-	Turns    string      `json:"turns,omitempty"`
+	Winner   string      `json:"winner"`
+	Turns    string      `json:"turns"`
 	TimeLeft interface{} `json:"time_left"`
 }
 

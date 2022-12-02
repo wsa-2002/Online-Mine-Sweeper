@@ -39,16 +39,16 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 
 	useEffect(() => {
 		if (readyRes && ready && !countDown && !gameStart) {
-			//setStartTime(new Date(res.start_time));
+			//setStartTime(new Date(readyRes.start_time));
 			setStartTime(new Date(nowww.getTime() + 6000));
 			let diff = 0;
 			const timeIntervalId = setInterval(() => {
 				const now = new Date();
 				diff = timeDiff(now, new Date(nowww.getTime() + 6000));
-				//diff = timeDiff(now, new Date(res.start_time));
+				//diff = timeDiff(now, new Date(readyRes.start_time));
 				if (diff <= 3) {
 					clearInterval(timeIntervalId);
-					console.log("time diff less than 3 =", diff, ", count down start");
+					// console.log("time diff less than 3 =", diff, ", count down start");
 					setCountDown(true);
 					if (readyRes.turns === username) {
 						setMyTurn(true);
@@ -59,10 +59,7 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 	}, [readyRes, ready]);
 
 	const timeDiff = (now, start) => {
-		console.log("now", now);
-		console.log("start", start);
 		const gap = start - now;
-		console.log("remain sec", gap / 1000);
 		return gap / 1000;
 	};
 
@@ -122,7 +119,7 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 	const readyGame = () => {
 		const data = {
 			room_number: 0,
-		}; // check detail
+		};
 		sendReady(data);
 		setReady(true);
 	};

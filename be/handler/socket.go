@@ -13,7 +13,7 @@ import (
 type Response struct {
 	Task  string      `json:"task"`
 	Data  interface{} `json:"data"`
-	Error error       `json:"error,omitempty"`
+	Error string      `json:"error"`
 }
 
 type Request struct {
@@ -60,83 +60,58 @@ func SocketHandler(c *gin.Context) {
 			panic(err)
 		}
 
-		//var socketData map[string]interface{}
 		if err := json.Unmarshal(msg, &socketData); err != nil {
-			err = ws.WriteJSON(Response{
-				"error",
-				nil,
-				err,
-			})
+			handleResponse(ws, "error", nil, err)
 		}
 		username := socketData.Username
 		switch socketData.Task {
 		case "setup":
 			var data service.SetUpInput
 			if err := json.Unmarshal(*socketData.Data, &data); err != nil {
-				err = ws.WriteJSON(Response{
-					"setup",
-					nil,
-					err,
-				})
+				handleResponse(ws, "setup", nil, err)
 			}
 			setUpResult, setUpErr := service.SetUp(username, data)
-			handleConnections(ws, setUpResult.RoomNumber)
-			err = ws.WriteJSON(Response{
-				"setup",
-				setUpResult,
-				setUpErr,
-			})
+			handleResponse(ws, "setup", setUpResult, setUpErr)
+			if setUpErr == nil {
+				handleConnections(ws, setUpResult.RoomNumber)
+				notifyUser(username, setUpResult.RoomNumber, "setup", service.SetUpOutput{
+					BoardSize:     setUpResult.BoardSize,
+					MineNum:       setUpResult.MineNum,
+					TimeLimit:     setUpResult.TimeLimit,
+					RoomType:      setUpResult.RoomType,
+					RoomNumber:    setUpResult.RoomNumber,
+					RivalUsername: username,
+				})
+			}
 		case "ready":
 			var data service.ReadyInput
 			if err := json.Unmarshal(*socketData.Data, &data); err != nil {
-				err = ws.WriteJSON(Response{
-					"ready",
-					nil,
-					err,
-				})
+				handleResponse(ws, "ready", nil, err)
 			}
 			readyResult, readyErr := service.HandleReady(username, data)
-			err = ws.WriteJSON(Response{
-				"ready",
-				readyResult,
-				readyErr,
-			})
+			if readyErr != nil {
+				handleResponse(ws, "ready", readyResult, readyErr)
+			}
+			if readyResult != nil {
+				handleResponse(ws, "ready", readyResult, readyErr)
+				notifyUser(username, data.RoomNumber, "ready", readyResult)
+			}
 		case "action":
 			var data service.ActionInput
 			if err := json.Unmarshal(*socketData.Data, &data); err != nil {
-				err = ws.WriteJSON(Response{
-					"ready",
-					nil,
-					err,
-				})
+				handleResponse(ws, "ready", nil, err)
 			}
 			actionResult, actionErr := service.HandleAction(username, data)
-			err = ws.WriteJSON(Response{
-				"update_board",
-				actionResult,
-				actionErr,
-			})
+			handleResponse(ws, "update_board", actionResult, actionErr)
 		case "check_status":
 			var data service.CheckStatusInput
 			if err := json.Unmarshal(*socketData.Data, &data); err != nil {
-				err = ws.WriteJSON(Response{
-					"check_status",
-					nil,
-					err,
-				})
+				handleResponse(ws, "check_status", nil, err)
 			}
 			checkStatusResult, checkStatusErr := service.CheckStatus(username, data)
-			err = ws.WriteJSON(Response{
-				"check_status",
-				checkStatusResult,
-				checkStatusErr,
-			})
+			handleResponse(ws, "check_status", checkStatusResult, checkStatusErr)
 		default:
-			err = ws.WriteJSON(Response{
-				socketData.Task,
-				nil,
-				errors.New("invalid task type"),
-			})
+			handleResponse(ws, socketData.Task, nil, errors.New("invalid task type"))
 		}
 		if err != nil {
 			panic(err)
@@ -152,4 +127,28 @@ func handleConnections(c *websocket.Conn, roomNumber int) {
 		roomNumber,
 	})
 	mutex.Unlock()
+}
+
+func handleResponse(c *websocket.Conn, task string, data interface{}, err error) {
+	if err != nil {
+		err = c.WriteJSON(Response{
+			task,
+			data,
+			err.Error(),
+		})
+	} else {
+		err = c.WriteJSON(Response{
+			task,
+			data,
+			"",
+		})
+	}
+}
+
+func notifyUser(sender string, roomId int, task string, data interface{}) {
+	for _, c := range rooms[roomId] {
+		if c.Username != sender {
+			handleResponse(c.Conn, task, data, nil)
+		}
+	}
 }

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 // client side
-const client = new WebSocket("ws://localhost:8000");
+const client = new WebSocket("ws://localhost:8000/socket");
 
 const username = "whoami"; // string
 
@@ -9,7 +9,7 @@ const sendData = async (data) => {
 };
 
 const sendSetup = (data) => {
-	sendData({ task: "setup", data });
+	sendData({ task: "setup", ...data });
 };
 
 const sendReady = (data) => {
@@ -37,8 +37,8 @@ const useSetup = () => {
 	const [setupRes, setSetupRes] = useState(null);
 
 	client.onmessage = (bytestring) => {
-		const { raw } = bytestring;
-		const { task, data, error } = JSON.parse(raw);
+		var { data } = bytestring;
+		var { task, data, error } = JSON.parse(data);
 
 		if (task === "setup") {
 			setSetupRes(data);
@@ -52,8 +52,8 @@ const useReady = () => {
 	const [readyRes, setReadyRes] = useState(null);
 
 	client.onmessage = (bytestring) => {
-		const { raw } = bytestring;
-		const { task, data, error } = JSON.parse(raw);
+		var { data } = bytestring;
+		var { task, data, error } = JSON.parse(data);
 
 		if (task === "ready") {
 			setReadyRes(data);
@@ -76,8 +76,8 @@ const useUpdate = () => {
 	const [updateRes, setUpdateRes] = useState(null);
 
 	client.onmessage = (bytestring) => {
-		const { raw } = bytestring;
-		const { task, data, error } = JSON.parse(raw);
+		var { data } = bytestring;
+		var { task, data, error } = JSON.parse(data);
 		if (task === "update_board") {
 			setUpdateRes(data);
 		}
@@ -90,8 +90,8 @@ const useCheck = () => {
 	const [checkRes, setCheckRes] = useState(null);
 
 	client.onmessage = (bytestring) => {
-		const { raw } = bytestring;
-		const { task, data, error } = JSON.parse(raw);
+		var { data } = bytestring;
+		var { task, data, error } = JSON.parse(data);
 		if (task === "check_status") {
 			setCheckRes(data);
 		}
