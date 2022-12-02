@@ -10,31 +10,44 @@ import (
 const gameCollectionName = "game"
 
 type Game struct {
-	User1        string    `bson:"username1"`
-	User2        string    `bson:"username2,omitempty"`
-	RoomId       int       `bson:"room_id"`
-	RoomType     string    `bson:"room_type"`
-	MineNum      int       `bson:"mine_num"`
-	BoardSize    int       `bson:"board_size"`
-	TimeLimit    int       `bson:"time_limit"`
-	IsFinished   bool      `bson:"is_finished"`
-	IsUser1Ready bool      `bson:"is_user1_ready"`
-	IsUser2Ready bool      `bson:"is_user2_ready"`
-	StartTime    time.Time `bson:"start_time"`
-	Turn         string    `bson:"turn"`
+	User1            string    `bson:"username1"`
+	User2            string    `bson:"username2,omitempty"`
+	RoomId           int       `bson:"room_id"`
+	RoomType         string    `bson:"room_type"`
+	MineNum          int       `bson:"mine_num"`
+	BoardSize        int       `bson:"board_size"`
+	TimeLimit        int       `bson:"time_limit"`
+	IsFinished       bool      `bson:"is_finished"`
+	IsUser1Ready     bool      `bson:"is_user1_ready"`
+	IsUser2Ready     bool      `bson:"is_user2_ready"`
+	StartTime        time.Time `bson:"start_time"`
+	Turn             string    `bson:"turn"`
+	User1TimeLeft    float32   `bson:"user1_time_left"`
+	User2TimeLeft    float32   `bson:"user2_time_left"`
+	LastResponseTime time.Time `bson:"last_response_time"`
+	Winner           string    `bson:"winner"`
+	Board            [][]Board `bson:"board"`
+}
+
+type Board struct {
+	CellType   int  `bson:"cell_type"`
+	IsRevealed bool `bson:"is_revealed"`
+	IsFlagged  bool `bson:"is_flagged"`
 }
 
 func CreateGame(creatorUsername string, roomId int, roomType string, mineNum int, boardSize int,
 	timeLimit int) (*Game, error) {
 	collection := DB.Collection(gameCollectionName)
 	newGame := Game{
-		RoomId:     roomId,
-		User1:      creatorUsername,
-		RoomType:   roomType,
-		MineNum:    mineNum,
-		BoardSize:  boardSize,
-		TimeLimit:  timeLimit,
-		IsFinished: false,
+		RoomId:        roomId,
+		User1:         creatorUsername,
+		RoomType:      roomType,
+		MineNum:       mineNum,
+		BoardSize:     boardSize,
+		TimeLimit:     timeLimit,
+		User1TimeLeft: float32(timeLimit),
+		User2TimeLeft: float32(timeLimit),
+		IsFinished:    false,
 	}
 
 	_, err := collection.InsertOne(context.TODO(), newGame)
@@ -127,7 +140,49 @@ func CheckReadyStatus(roomId int) (bool, error) {
 func SetGameStart(roomId int, startTime time.Time, turn string) error {
 	collection := DB.Collection(gameCollectionName)
 	filter := bson.D{{"room_id", roomId}}
-	update := bson.D{{"$set", bson.D{{"start_time", startTime}, {"turn", turn}}}}
+	update := bson.D{{"$set", bson.D{
+		{"start_time", startTime},
+		{"turn", turn},
+		{"last_response_time", startTime},
+	}}}
+	_, err := collection.UpdateOne(context.TODO(), filter, update)
+	return err
+}
+
+func SetBoard(roomId int, board [][]Board) error {
+	collection := DB.Collection(gameCollectionName)
+	filter := bson.D{{"room_id", roomId}}
+	update := bson.D{{"$set", bson.D{
+		{"board", board},
+	}}}
+	_, err := collection.UpdateOne(context.TODO(), filter, update)
+	return err
+}
+
+func UpdateGameStatus(roomId int, turn string, user1TimeLeft float32, user2TimeLeft float32) error {
+	collection := DB.Collection(gameCollectionName)
+	filter := bson.D{{"room_id", roomId}}
+	update := bson.D{{"$set", bson.D{
+		{"turn", turn},
+		{"user1_time_left", user1TimeLeft},
+		{"user2_time_left", user2TimeLeft},
+	}}}
+	_, err := collection.UpdateOne(context.TODO(), filter, update)
+	return err
+}
+
+func UpdateResponseTime(roomId int, responseTime time.Time) error {
+	collection := DB.Collection(gameCollectionName)
+	filter := bson.D{{"room_id", roomId}}
+	update := bson.D{{"$set", bson.D{{"last_response_time", responseTime}}}}
+	_, err := collection.UpdateOne(context.TODO(), filter, update)
+	return err
+}
+
+func SetGameFinish(roomId int) error {
+	collection := DB.Collection(gameCollectionName)
+	filter := bson.D{{"room_id", roomId}}
+	update := bson.D{{"$set", bson.D{{"is_finished", true}}}}
 	_, err := collection.UpdateOne(context.TODO(), filter, update)
 	return err
 }
