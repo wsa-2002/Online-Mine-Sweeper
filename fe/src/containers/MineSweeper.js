@@ -32,8 +32,10 @@ const MineSweeper = () => {
       },
     };
     console.log("data for setup ", packet);
-    sendSetup(packet); // web socket
+    setStartGame(true);
+    //sendSetup(packet); // web socket
   };
+  /*
   // only set game param states after receiving setup response
   useEffect(() => {
     const res = setupRes.data;
@@ -77,7 +79,7 @@ const MineSweeper = () => {
     rivalUsername,
     // error,
     // roomOption,
-  ]);
+  ]);*/
 
   const backToHomeOnClick = () => {
     setStartGame(false);
