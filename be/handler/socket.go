@@ -105,7 +105,13 @@ func SocketHandler(c *gin.Context) {
 			}
 			actionResult, actionErr := service.HandleAction(username, data, requestTime)
 			handleResponse(ws, "update_board", actionResult, actionErr)
-			notifyUser(username, data.RoomNumber, "update_board", actionResult)
+			if actionErr == nil {
+				notifyUser(username, data.RoomNumber, "update_board", actionResult)
+				if actionResult.Status == "GAMEOVER" {
+					RemoveRoomConnection(data.RoomNumber)
+				}
+			}
+
 		case "check_status":
 			var data service.CheckStatusInput
 			if err := json.Unmarshal(*socketData.Data, &data); err != nil {
@@ -154,4 +160,8 @@ func notifyUser(sender string, roomId int, task string, data interface{}) {
 			handleResponse(c.Conn, task, data, nil)
 		}
 	}
+}
+
+func RemoveRoomConnection(roomId int) {
+	delete(rooms, roomId)
 }

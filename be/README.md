@@ -5,7 +5,7 @@ If you haven't installed go yet, run the following command:
 ```shell
 brew install go
 ```
-or visit https://go.dev/doc/install and download package that fix your OS.
+or visit https://go.dev/doc/install and download package that fit your OS.
 
 ### Start
 ```shell
