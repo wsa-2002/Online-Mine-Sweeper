@@ -17,6 +17,7 @@ const MineSweeper = () => {
   const [roomNumber, setRoomNumber] = useState(null);
   const [rivalUsername, setRivalUsername] = useState(null);
   const [error, setError] = useState(null);
+  const [displayedErrorMessage, setDisplayedErrorMessage] = useState(null);
   const { sendSetup, setupRes } = useSetup(); // web socket
 
   const startGameOnClick = () => {
@@ -33,9 +34,13 @@ const MineSweeper = () => {
     };
     console.log("data for setup ", packet);
     setStartGame(true);
-    //sendSetup(packet); // web socket
+    sendSetup(packet); // web socket
   };
-  /*
+  useEffect(() => {
+    console.log("setup res", setupRes);
+  }, [setupRes]);
+
+  /* TODO: web socket response and start game (set states and then display board)
   // only set game param states after receiving setup response
   useEffect(() => {
     const res = setupRes.data;
@@ -55,7 +60,7 @@ const MineSweeper = () => {
         setStartGame(true);
       }
     } else if (roomOption === "RANDOM") {
-      if (error) {
+      if (error == 'no rooms available') {
         // TODO: handle no room error
       } else if (
         boardSize &&
