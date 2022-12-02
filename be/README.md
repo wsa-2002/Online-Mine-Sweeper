@@ -1,13 +1,7 @@
 # Online MineSweeper
 
-### Env setup
-If you haven't installed go yet, run the following command:
-```shell
-brew install go
-```
-or visit https://go.dev/doc/install and download package that fit your OS.
+### Setup
 
-### Start
 ```shell
 cp .env.example .env
 cp docker-compose.yaml.example docker-compose.yaml
@@ -15,12 +9,6 @@ cp docker-compose.yaml.example docker-compose.yaml
 And fill in necessary environment variables in `.env`, then run
 
 ```shell
-docker-compose up -d
+docker-compose up --build -d
 ```
-You may check whether the database is up from `localhost:8082`, and then create a database called `network-project`.
-And then run
-```shell
-go mod tidy
-go run main.go
-```
-You may check the connection through `<SERVICE_ADDRESS>/socket`
+You may check whether the database is up from `localhost:8082`, and then create a database called `network-project`, and then you may check the connection through `<SERVICE_ADDRESS>/socket`

@@ -1,7 +1,12 @@
 version: '3.1'
 
 services:
-
+  be:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    command: "app"
   mongo:
     image: mongo
     restart: always
