@@ -6,14 +6,14 @@
   Copyright     [ 2021 10 ]
 ****************************************************************************/
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Cell from "./Cell";
 import Modal from "./Modal";
 import Dashboard from "./Dashboard";
 import createBoard from "../util/createBoard";
 import { revealed } from "../util/reveal";
 import "./css/Board.css";
-import { sendReady, useReceiveMsg } from "../hooks/websocket";
+import { WebsocketContext } from "../hooks/websocket";
 import CountDown from "./CountDown";
 
 const Board = ({ boardSize, mineNum, backToHome }) => {
@@ -28,33 +28,32 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 	const [gameStart, setGameStart] = useState(false); // 1 -> game start
 	const [ready, setReady] = useState(false); // 1 -> this player is ready
 	const [startTime, setStartTime] = useState(null);
-	const { task, data } = useReceiveMsg("ready");
+	const [task, value, send] = useContext(WebsocketContext);
+
 	const username = "hello";
-	const nowww = new Date(); // debug
+	const room_number = 100;
 
 	useEffect(() => {
 		freshBoard();
 	}, []);
 
 	useEffect(() => {
-		if (data) {
-			//setStartTime(new Date(data.start_time));
-			setStartTime(new Date(nowww.getTime() + 6000));
+		if (task === "ready" && value) {
+			setStartTime(new Date(value.start_time));
 			let diff = 0;
 			const timeIntervalId = setInterval(() => {
 				const now = new Date();
-				diff = timeDiff(now, new Date(nowww.getTime() + 6000));
-				//diff = timeDiff(now, new Date(data.start_time));
+				diff = timeDiff(now, new Date(value.start_time));
 				if (diff <= 3) {
 					clearInterval(timeIntervalId);
 					setCountDown(true);
-					// if (data.turns === username) {
-					// 	setMyTurn(true);
-					// }
+					if (value.turns === username) {
+						setMyTurn(true);
+					}
 				}
 			}, 1000);
 		}
-	}, [data]);
+	}, [task, value]);
 
 	const timeDiff = (now, start) => {
 		const gap = start - now;
@@ -116,9 +115,13 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 
 	const readyGame = () => {
 		const data = {
-			room_number: 0,
+			task: "ready",
+			username: username,
+			data: {
+				room_number: room_number,
+			},
 		};
-		sendReady(data);
+		send(data);
 		setReady(true);
 	};
 
