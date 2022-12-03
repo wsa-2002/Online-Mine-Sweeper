@@ -1,15 +1,16 @@
 import { createContext, useEffect, useState, useRef } from "react";
 
-export const WebsocketContext = createContext(null, null, () => {});
+export const WebsocketContext = createContext(null, null, null, () => {});
 
 export const WebsocketProvider = ({ children }) => {
 	const [task, setTask] = useState(null);
 	const [value, setValue] = useState(null);
+	const [error, setError] = useState(null);
 
 	const ws = useRef(null);
 
 	useEffect(() => {
-		const client = new WebSocket("ws://localhost:8000/socket");
+		const client = new WebSocket(process.env.REACT_APP_ClIENT_ADDRESS);
 
 		client.onopen = () => {
 			console.log("connection established");
@@ -23,10 +24,10 @@ export const WebsocketProvider = ({ children }) => {
 			// console.log(data);
 			if (error) {
 				console.log("server error msg: ", error);
-				return;
 			}
 			setTask(task);
 			setValue(data);
+			setError(error);
 		};
 
 		ws.current = client;
@@ -41,7 +42,7 @@ export const WebsocketProvider = ({ children }) => {
 		bindSend(JSON.stringify(data));
 	};
 
-	const ret = [task, value, sendData];
+	const ret = [task, value, error, sendData];
 
 	return (
 		<WebsocketContext.Provider value={ret}>

@@ -28,7 +28,7 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 	const [gameStart, setGameStart] = useState(false); // 1 -> game start
 	const [ready, setReady] = useState(false); // 1 -> this player is ready
 	const [startTime, setStartTime] = useState(null);
-	const [task, value, send] = useContext(WebsocketContext);
+	const [task, value, error, send] = useContext(WebsocketContext);
 
 	const username = "hello";
 	const room_number = 100;
@@ -40,11 +40,11 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 	useEffect(() => {
 		if (task === "ready" && value) {
 			setStartTime(new Date(value.start_time));
-			let diff = 0;
+			let interval = 0;
 			const timeIntervalId = setInterval(() => {
 				const now = new Date();
-				diff = timeDiff(now, new Date(value.start_time));
-				if (diff <= 3) {
+				interval = timeDiff(now, new Date(value.start_time));
+				if (interval <= 3) {
 					clearInterval(timeIntervalId);
 					setCountDown(true);
 					if (value.turns === username) {
