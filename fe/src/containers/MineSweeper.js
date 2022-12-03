@@ -6,11 +6,11 @@
   Copyright     [ 2021 10 ]
 ****************************************************************************/
 
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import "./MineSweeper.css";
 import Board from "../components/Board";
 import HomePage from "../components/HomePage";
-import { WebsocketProvider } from "../hooks/websocket";
+import { WebsocketProvider } from "../context/websocket";
 
 const MineSweeper = () => {
 	const [startGame, setStartGame] = useState(false); // A boolean variable. If true, show the Board, else show the HomePage.
