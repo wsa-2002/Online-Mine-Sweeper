@@ -1,102 +1,52 @@
-import { useEffect, useState } from "react";
-// client side
-const client = new WebSocket("ws://localhost:8000/socket");
+import { createContext, useEffect, useState, useRef } from "react";
 
-const username = "whoami"; // string
+export const WebsocketContext = createContext(null, null, null, () => {});
 
-const sendData = async (data) => {
-	await client.send(JSON.stringify(data));
-};
+export const WebsocketProvider = ({ children }) => {
+	const [task, setTask] = useState(null);
+	const [value, setValue] = useState(null);
+	const [error, setError] = useState(null);
 
-const sendSetup = (data) => {
-	sendData({ task: "setup", ...data });
-};
+	const ws = useRef(null);
 
-const sendReady = (data) => {
-	sendData({ task: "ready", username: username, data: data });
-};
-
-const sendAction = (data) => {
-	sendData({ task: "action", username: username, data: data });
-};
-
-const sendCheckStatus = (data) => {
-	sendData({ task: "check_status", username: username, data: data });
-};
-
-client.onopen = () => {
-	console.log("hello");
-};
-
-client.onclose = () => {
-	console.log("connection closed");
-};
-
-// home page
-const useSetup = () => {
-	const [setupRes, setSetupRes] = useState(null);
-
-	client.onmessage = (bytestring) => {
-		var { data } = bytestring;
-		var { task, data, error } = JSON.parse(data);
-
-		if (task === "setup") {
-			setSetupRes(data);
-		}
-	};
-	return { sendSetup, setupRes };
-};
-
-// board page
-const useReady = () => {
-	const [readyRes, setReadyRes] = useState(null);
-
-	client.onmessage = (bytestring) => {
-		var { data } = bytestring;
-		var { task, data, error } = JSON.parse(data);
-
-		if (task === "ready") {
-			setReadyRes(data);
-		}
-	};
-
-	// 模擬input可以先這樣寫
 	useEffect(() => {
-		setReadyRes({
-			start_time: "2022-11-29T21:25:00",
-			turns: "string", // username
-		});
+		const client = new WebSocket(process.env.REACT_APP_ClIENT_ADDRESS);
+
+		client.onopen = () => {
+			console.log("connection established");
+		};
+		client.onclose = () => {
+			console.log("connection closed");
+		};
+		client.onmessage = (bytestring) => {
+			var { data } = bytestring;
+			var { task, data, error } = JSON.parse(data);
+			// console.log(data);
+			if (error) {
+				console.log("server error msg: ", error);
+			}
+			setTask(task);
+			setValue(data);
+			setError(error);
+		};
+
+		ws.current = client;
+
+		return () => {
+			client.close();
+		};
 	}, []);
 
-	return { sendReady, readyRes };
-};
-
-// board page
-const useUpdate = () => {
-	const [updateRes, setUpdateRes] = useState(null);
-
-	client.onmessage = (bytestring) => {
-		var { data } = bytestring;
-		var { task, data, error } = JSON.parse(data);
-		if (task === "update_board") {
-			setUpdateRes(data);
-		}
+	const sendData = async (data) => {
+		const bindSend = ws.current?.send.bind(ws.current);
+		bindSend(JSON.stringify(data));
 	};
-	return { sendAction, updateRes };
+
+	const ret = [task, value, error, sendData];
+
+	return (
+		<WebsocketContext.Provider value={ret}>
+			{children}
+		</WebsocketContext.Provider>
+	);
 };
-
-// board page
-const useCheck = () => {
-	const [checkRes, setCheckRes] = useState(null);
-
-	client.onmessage = (bytestring) => {
-		var { data } = bytestring;
-		var { task, data, error } = JSON.parse(data);
-		if (task === "check_status") {
-			setCheckRes(data);
-		}
-	};
-	return { sendCheckStatus, checkRes };
-};
-
-export { useReady, useCheck, useSetup, useUpdate };
