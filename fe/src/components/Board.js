@@ -13,7 +13,7 @@ import Dashboard from "./Dashboard";
 import createBoard from "../util/createBoard";
 import { revealed } from "../util/reveal";
 import "./css/Board.css";
-import { WebsocketContext } from "../hooks/websocket";
+import { WebsocketContext } from "../context/websocket";
 import CountDown from "./CountDown";
 
 const Board = ({ boardSize, mineNum, backToHome }) => {
