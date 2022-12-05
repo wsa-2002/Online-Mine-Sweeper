@@ -10,7 +10,6 @@ import React, { useState } from "react";
 import "./MineSweeper.css";
 import Board from "../components/Board";
 import HomePage from "../components/HomePage";
-import { WebsocketProvider } from "../context/websocket";
 
 const MineSweeper = () => {
 	const [startGame, setStartGame] = useState(false); // A boolean variable. If true, show the Board, else show the HomePage.
@@ -45,23 +44,21 @@ const MineSweeper = () => {
 
 	return (
 		<div className="mineSweeper">
-			<WebsocketProvider>
-				{startGame ? (
-					<Board
-						boardSize={boardSize}
-						mineNum={mineNum}
-						backToHome={backToHomeOnClick}
-					/>
-				) : (
-					<HomePage
-						startGameOnClick={startGameOnClick}
-						mineNumOnChange={mineNumOnChange}
-						boardSizeOnChange={boardSizeOnChange}
-						mineNum={mineNum}
-						boardSize={boardSize}
-					/>
-				)}
-			</WebsocketProvider>
+			{startGame ? (
+				<Board
+					boardSize={boardSize}
+					mineNum={mineNum}
+					backToHome={backToHomeOnClick}
+				/>
+			) : (
+				<HomePage
+					startGameOnClick={startGameOnClick}
+					mineNumOnChange={mineNumOnChange}
+					boardSizeOnChange={boardSizeOnChange}
+					mineNum={mineNum}
+					boardSize={boardSize}
+				/>
+			)}
 		</div>
 	);
 };
