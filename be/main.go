@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+
 	rand.Seed(time.Now().UnixNano())
 	envErr := godotenv.Load()
 	if envErr != nil {
