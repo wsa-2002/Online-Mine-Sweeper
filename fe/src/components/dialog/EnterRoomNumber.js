@@ -20,7 +20,7 @@ const EnterRoomNumber = ({ close, startGame, roomNumber, setRoomNumber }) => {
   return (
     <div className="smDialog">
       <p className="smDialogTitle">Enter Room Number</p>
-      <input onChange={(e) => setRoomNumber(e.target.value)} />
+      <input onChange={(e) => setRoomNumber(Number(e.target.value))} />
       <div>
         <button className="dialogBtn" onClick={close}>
           Cancel

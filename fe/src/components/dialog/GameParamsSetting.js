@@ -32,11 +32,13 @@ const GameParamsSetting = ({
 
   // handle error message displayed
   useEffect(() => {
-    if (mineNum && boardSize) {
+    if (mineNum && boardSize && timeLimit) {
       if (mineNum < 1 || mineNum > 50) {
         setError("⚠️ Mine number should be between 1 and 50.");
       } else if (boardSize < 8 || boardSize > 20) {
         setError("⚠️ Board size should be between 8 and 20.");
+      } else if (timeLimit < 60 || timeLimit > 180) {
+        setError("⚠️ Time limited should be between 60 and 180.");
       } else if (mineNum > boardSize * boardSize) {
         setError(
           "⚠️ The number of mines should be smaller than the board area!"
@@ -47,7 +49,7 @@ const GameParamsSetting = ({
     } else {
       setError(null);
     }
-  }, [mineNum, boardSize]);
+  }, [mineNum, boardSize, timeLimit]);
 
   return (
     <div className="dialog">
@@ -81,7 +83,7 @@ const GameParamsSetting = ({
         <p className="alignedTextLeft">Mine Number</p>
         <input
           defaultValue={mineNum}
-          onChange={(e) => setMineNum(e.target.value)}
+          onChange={(e) => setMineNum(Number(e.target.value))}
           placeholder="a number from 1 to 50"
         />
       </div>
@@ -89,7 +91,7 @@ const GameParamsSetting = ({
         <p className="alignedTextLeft">Board Size</p>
         <input
           defaultValue={boardSize}
-          onChange={(e) => setBoardSize(e.target.value)}
+          onChange={(e) => setBoardSize(Number(e.target.value))}
           placeholder="a number from 8 to 20"
         />
       </div>
@@ -97,7 +99,7 @@ const GameParamsSetting = ({
         <p className="alignedTextLeft">Time Limited</p>
         <input
           defaultValue={timeLimit}
-          onChange={(e) => setTimeLimit(e.target.value)}
+          onChange={(e) => setTimeLimit(Number(e.target.value))}
           placeholder="a number from 60 to 180"
         />
       </div>

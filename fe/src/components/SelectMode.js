@@ -41,15 +41,7 @@ const SelectMode = ({
     if (roomOption === "RANDOM") {
       startGame(); // submit data for setup and start game
     }
-  }, [
-    roomOption,
-    roomType,
-    boardSize,
-    mineNum,
-    timeLimit,
-    roomNumber,
-    startGame,
-  ]);
+  }, [roomOption]);
 
   const handleEnterRoomNumber = () => {
     setRoomOption("ASSIGN");
@@ -91,7 +83,7 @@ const SelectMode = ({
         <button className="btn" onClick={handleEnterRandomRoom}>
           Enter Random Room
         </button>
-        {error && <p style={{ marginBottom: "0px" }}>⚠️ {error}</p>}
+        {error && <p style={{ marginTop: "-10px" }}>⚠️ {error}</p>}
         <Popup
           open={showEnterRoomNumber}
           position="center"
