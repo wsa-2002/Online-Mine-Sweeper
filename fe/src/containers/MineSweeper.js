@@ -104,18 +104,6 @@ const MineSweeper = () => {
     setStartGame(false);
   };
 
-  useEffect(() => {
-    console.log("username: ", username);
-  }, [username]);
-
-  useEffect(() => {
-    console.log("startGame(boolean): ", startGame);
-  }, [startGame]);
-
-  useEffect(() => {
-    console.log("selectMode(boolean): ", selectMode);
-  }, [selectMode]);
-
   return (
     <div className="mineSweeper">
       {selectMode ? (
