@@ -30,7 +30,6 @@ const SelectMode = ({
 
   const handleEnterRandomRoom = () => {
     setRoomOption("RANDOM");
-    setRoomType(null);
     setBoardSize(null);
     setMineNum(null);
     setTimeLimit(null);
@@ -45,7 +44,6 @@ const SelectMode = ({
 
   const handleEnterRoomNumber = () => {
     setRoomOption("ASSIGN");
-    setRoomType(null);
     setBoardSize(null);
     setMineNum(null);
     setTimeLimit(null);
