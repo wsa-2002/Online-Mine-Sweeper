@@ -32,12 +32,12 @@ const MineSweeper = () => {
         room_number: roomNumber,
       },
     };
-    console.log("data for setup ", data);
+    console.log("request data", data);
     send(data); // web socket
   };
 
   useEffect(() => {
-    console.log("setup res", value);
+    console.log("response data", value);
   }, [value]);
 
   // only set game param states after receiving setup response
@@ -53,7 +53,7 @@ const MineSweeper = () => {
       }
       setErrorMessage(error);
     }
-  }, [value, error, task]); /*
+  }, [value, error, task]);
   // only start game after receiving setup response
   useEffect(() => {
     if (roomOption === "NEW") {
@@ -76,8 +76,7 @@ const MineSweeper = () => {
       ) {
         setStartGame(true);
       }
-    } /*else if (roomOption === "ASSIGN") {
-      console.log("errrr", error);
+    } else if (roomOption === "ASSIGN") {
       if (errorMessage === "room not found") {
         setBoardSize(10);
         setMineNum(10);
@@ -103,7 +102,7 @@ const MineSweeper = () => {
     roomOption,
     errorMessage,
   ]);
-*/
+
   const backToHomeOnClick = () => {
     setStartGame(false);
   };

@@ -23,12 +23,12 @@ const GameParamsSetting = ({
 
   // handle disabled status of buttons
   useEffect(() => {
-    if (roomType && mineNum && boardSize && timeLimit) {
-      setSubmitDisabled(false);
-    } else {
+    if (!roomType || !mineNum || !boardSize || !timeLimit || error) {
       setSubmitDisabled(true);
+    } else {
+      setSubmitDisabled(false);
     }
-  }, [roomType, mineNum, boardSize, timeLimit]);
+  }, [roomType, mineNum, boardSize, timeLimit, error]);
 
   // handle error message displayed
   useEffect(() => {
