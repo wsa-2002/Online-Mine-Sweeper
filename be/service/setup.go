@@ -66,7 +66,7 @@ func SetUp(username string, data SetUpInput) (*SetUpOutput, error) {
 		}, nil
 	case "ASSIGN":
 		gameInfo, err := persistence.GetGameByRoomId(data.RoomNumber)
-		if gameInfo.IsFinished || gameInfo.RoomType == "PRIVATE" {
+		if err != nil || gameInfo.IsFinished || gameInfo.RoomType == "PRIVATE" {
 			return nil, errors.New("room not found")
 		}
 		if gameInfo.User2 != "" {

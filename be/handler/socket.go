@@ -23,14 +23,14 @@ type Request struct {
 	Data     *json.RawMessage `json:"data"`
 }
 
-type wsClients struct {
+type wsClient struct {
 	Conn       *websocket.Conn `json:"conn"`
 	Username   string          `json:"username"`
 	RoomNumber int             `json:"room_number,omitempty"`
 }
 
 var (
-	rooms      = make(map[int][]wsClients)
+	rooms      = make(map[int][]wsClient)
 	socketData Request
 	mutex      sync.Mutex
 )
@@ -130,7 +130,7 @@ func SocketHandler(c *gin.Context) {
 
 func handleConnections(c *websocket.Conn, roomNumber int) {
 	mutex.Lock()
-	rooms[roomNumber] = append(rooms[roomNumber], wsClients{
+	rooms[roomNumber] = append(rooms[roomNumber], wsClient{
 		c,
 		socketData.Username,
 		roomNumber,
