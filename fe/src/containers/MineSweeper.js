@@ -54,10 +54,31 @@ const MineSweeper = () => {
       setErrorMessage(error);
     }
   }, [value, error, task]);
+  useEffect(() => {
+    console.log(
+      "params",
+      boardSize,
+      mineNum,
+      timeLimit,
+      roomNumber,
+      rivalUsername,
+      roomOption,
+      errorMessage
+    );
+  }, [
+    boardSize,
+    mineNum,
+    timeLimit,
+    roomNumber,
+    rivalUsername,
+    roomOption,
+    errorMessage,
+  ]);
   // only start game after receiving setup response
   useEffect(() => {
     if (roomOption === "NEW") {
-      if (roomNumber) {
+      if (!error && boardSize && mineNum && timeLimit && roomNumber) {
+        // to prevent: room not found -> create new room
         setStartGame(true);
       }
     } else if (roomOption === "RANDOM") {

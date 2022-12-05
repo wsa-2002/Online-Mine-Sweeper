@@ -30,6 +30,13 @@ const GameParamsSetting = ({
     }
   }, [roomType, mineNum, boardSize, timeLimit, error]);
 
+  // initialize params for the first render
+  useEffect(() => {
+    setMineNum(10);
+    setBoardSize(10);
+    setRoomType("PUBLIC");
+    setTimeLimit(60);
+  }, []);
   // handle error message displayed
   useEffect(() => {
     if (mineNum && boardSize && timeLimit) {

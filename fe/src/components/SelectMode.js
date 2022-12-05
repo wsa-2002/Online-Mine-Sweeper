@@ -41,6 +41,9 @@ const SelectMode = ({
       startGame(); // submit data for setup and start game
     }
   }, [roomOption]);
+  useEffect(() => {
+    console.log("gamesparamssetting", showGameParamsSetting);
+  }, [showEnterRoomNumber]);
 
   const handleEnterRoomNumber = () => {
     setRoomOption("ASSIGN");
@@ -102,7 +105,7 @@ const SelectMode = ({
         <button className="btn" onClick={handleEnterRoomNumber}>
           Enter Room Number
         </button>
-        {error === "room not found" && (
+        {(error === "room not found" || error === "room is full") && (
           <p style={{ marginTop: "-10px" }}>⚠️ {error}</p>
         )}
       </div>
