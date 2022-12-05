@@ -36,6 +36,12 @@ func HandleAction(username string, data ActionInput, requestTime time.Time) (*Ac
 	if gameInfo.Turn != username {
 		return nil, errors.New("no permission")
 	}
+	if !gameInfo.IsUser1Ready && !gameInfo.IsUser2Ready {
+		return nil, errors.New("user hasn't ready")
+	}
+	if gameInfo.StartTime.After(requestTime) {
+		return nil, errors.New("game hasn't start")
+	}
 	if len(gameInfo.Board) == 0 {
 		board := createBoard(gameInfo.BoardSize, gameInfo.MineNum, data.X, data.Y)
 		gameInfo.Board = board

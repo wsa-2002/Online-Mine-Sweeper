@@ -1,7 +1,14 @@
 version: '3.1'
 
 services:
-
+  be:
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    command: "app"
+    networks:
+      network-project:
   mongo:
     image: mongo
     restart: always
@@ -10,7 +17,11 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-
+      MONGO_INITDB_DATABASE: network-project
+    volumes:
+      - ./mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    networks:
+      network-project:
   mongo-express:
     image: mongo-express
     restart: always
@@ -20,3 +31,7 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
+    networks:
+      network-project:
+networks:
+  network-project:

@@ -3,6 +3,7 @@ import "./MineSweeper.css";
 import Board from "../components/Board";
 import SelectMode from "../components/SelectMode";
 import HomePage from "../components/HomePage";
+import { WebsocketProvider } from "../context/websocket";
 import { useSetup } from "../hooks/websocket";
 
 const MineSweeper = () => {
@@ -109,41 +110,43 @@ const MineSweeper = () => {
 
   return (
     <div className="mineSweeper">
-      {selectMode ? (
-        startGame ? (
-          <Board
-            username={username}
-            boardSize={boardSize}
-            mineNum={mineNum}
-            timeLimit={timeLimit}
-            rivalUsername={rivalUsername}
-            backToHome={backToHomeOnClick}
-          />
+      <WebsocketProvider>
+        {selectMode ? (
+          startGame ? (
+            <Board
+              username={username}
+              boardSize={boardSize}
+              mineNum={mineNum}
+              timeLimit={timeLimit}
+              rivalUsername={rivalUsername}
+              backToHome={backToHomeOnClick}
+            />
+          ) : (
+            <SelectMode
+              roomOption={roomOption}
+              setRoomOption={setRoomOption}
+              roomType={roomType}
+              setRoomType={setRoomType}
+              mineNum={mineNum}
+              setMineNum={setMineNum}
+              boardSize={boardSize}
+              setBoardSize={setBoardSize}
+              timeLimit={timeLimit}
+              setTimeLimit={setTimeLimit}
+              roomNumber={roomNumber}
+              setRoomNumber={setRoomNumber}
+              startGame={startGameOnClick}
+              error={error}
+            />
+          )
         ) : (
-          <SelectMode
-            roomOption={roomOption}
-            setRoomOption={setRoomOption}
-            roomType={roomType}
-            setRoomType={setRoomType}
-            mineNum={mineNum}
-            setMineNum={setMineNum}
-            boardSize={boardSize}
-            setBoardSize={setBoardSize}
-            timeLimit={timeLimit}
-            setTimeLimit={setTimeLimit}
-            roomNumber={roomNumber}
-            setRoomNumber={setRoomNumber}
-            startGame={startGameOnClick}
-            error={error}
+          <HomePage
+            username={username}
+            setUsername={setUsername}
+            moveOnToSelectMode={() => setSelectMode(true)}
           />
-        )
-      ) : (
-        <HomePage
-          username={username}
-          setUsername={setUsername}
-          moveOnToSelectMode={() => setSelectMode(true)}
-        />
-      )}
+        )}
+      </WebsocketProvider>
     </div>
   );
 };
