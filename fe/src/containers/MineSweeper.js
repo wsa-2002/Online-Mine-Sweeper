@@ -12,7 +12,7 @@ const MineSweeper = () => {
   const [roomOption, setRoomOption] = useState(null);
   const [roomType, setRoomType] = useState("PUBLIC");
   const [mineNum, setMineNum] = useState(10);
-  const [boardSize, setBoardSize] = useState(8);
+  const [boardSize, setBoardSize] = useState(10);
   const [timeLimit, setTimeLimit] = useState(60);
   const [roomNumber, setRoomNumber] = useState(null);
   const [rivalUsername, setRivalUsername] = useState(null);
@@ -33,18 +33,17 @@ const MineSweeper = () => {
       },
     };
     console.log("data for setup ", packet);
-    setStartGame(true);
+    //setStartGame(true);
     sendSetup(packet); // web socket
   };
   useEffect(() => {
     console.log("setup res", setupRes);
   }, [setupRes]);
 
-  /* TODO: web socket response and start game (set states and then display board)
   // only set game param states after receiving setup response
   useEffect(() => {
-    const res = setupRes.data;
-    if (res["room_number"]) {
+    if (setupRes) {
+      const res = setupRes;
       setBoardSize(res["board_size"]);
       setMineNum(res["mine_num"]);
       setTimeLimit(res["time_limit"]);
@@ -59,9 +58,15 @@ const MineSweeper = () => {
       if (roomNumber) {
         setStartGame(true);
       }
-    } else if (roomOption === "RANDOM") {
-      if (error == 'no rooms available') {
-        // TODO: handle no room error
+    }
+    // TODO: start game of other 2 mode
+    else if (roomOption === "RANDOM") {
+      if (error === "no rooms available") {
+        setBoardSize(10);
+        setMineNum(10);
+        setTimeLimit(60);
+        setRoomNumber(null);
+        setRivalUsername(null);
       } else if (
         boardSize &&
         mineNum &&
@@ -84,7 +89,7 @@ const MineSweeper = () => {
     rivalUsername,
     // error,
     // roomOption,
-  ]);*/
+  ]);
 
   const backToHomeOnClick = () => {
     setStartGame(false);
@@ -107,9 +112,11 @@ const MineSweeper = () => {
       {selectMode ? (
         startGame ? (
           <Board
+            username={username}
             boardSize={boardSize}
             mineNum={mineNum}
             timeLimit={timeLimit}
+            rivalUsername={rivalUsername}
             backToHome={backToHomeOnClick}
           />
         ) : (
@@ -127,6 +134,7 @@ const MineSweeper = () => {
             roomNumber={roomNumber}
             setRoomNumber={setRoomNumber}
             startGame={startGameOnClick}
+            error={error}
           />
         )
       ) : (

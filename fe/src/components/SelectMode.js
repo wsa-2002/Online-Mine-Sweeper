@@ -18,6 +18,7 @@ const SelectMode = ({
   roomNumber,
   setRoomNumber,
   startGame,
+  error,
 }) => {
   const [showGameParamsSetting, setShowGameParamsSetting] = useState(false);
   const [showEnterRoomNumber, setShowEnterRoomNumber] = useState(false);
@@ -34,7 +35,6 @@ const SelectMode = ({
     setMineNum(null);
     setTimeLimit(null);
     setRoomNumber(null);
-    setShowGameParamsSetting(!showGameParamsSetting);
   };
   // for enter random room, only start game after states are set
   useEffect(() => {
@@ -91,6 +91,7 @@ const SelectMode = ({
         <button className="btn" onClick={handleEnterRandomRoom}>
           Enter Random Room
         </button>
+        {error && <p style={{ marginBottom: "0px" }}>{error}</p>}
         <Popup
           open={showEnterRoomNumber}
           position="center"
