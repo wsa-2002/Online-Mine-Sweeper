@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import "./MineSweeper.css";
 import Board from "../components/Board";
 import SelectMode from "../components/SelectMode";
 import HomePage from "../components/HomePage";
 import { WebsocketProvider } from "../context/websocket";
-import { useSetup } from "../hooks/websocket";
+import { WebsocketContext } from "../context/websocket";
 
 const MineSweeper = () => {
   const [selectMode, setSelectMode] = useState(false);
   const [startGame, setStartGame] = useState(false);
-  const [username, setUsername] = useState(null);
+  const [username, setUsername] = useState("erica");
   const [roomOption, setRoomOption] = useState(null);
   const [roomType, setRoomType] = useState("PUBLIC");
   const [mineNum, setMineNum] = useState(10);
@@ -17,12 +17,12 @@ const MineSweeper = () => {
   const [timeLimit, setTimeLimit] = useState(60);
   const [roomNumber, setRoomNumber] = useState(null);
   const [rivalUsername, setRivalUsername] = useState(null);
-  const [error, setError] = useState(null);
-  const [displayedErrorMessage, setDisplayedErrorMessage] = useState(null);
-  const { sendSetup, setupRes } = useSetup(); // web socket
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [task, value, error, send] = useContext(WebsocketContext);
 
   const startGameOnClick = () => {
-    const packet = {
+    const data = {
+      task: "setup",
       username: username,
       data: {
         room_option: roomOption,
@@ -33,26 +33,27 @@ const MineSweeper = () => {
         room_number: roomNumber,
       },
     };
-    console.log("data for setup ", packet);
+    console.log("data for setup ", data);
     //setStartGame(true);
-    sendSetup(packet); // web socket
+    //send(data); // web socket
   };
+  /*
   useEffect(() => {
-    console.log("setup res", setupRes);
-  }, [setupRes]);
-
+    console.log("setup res", value);
+  }, [value]);
+  /*
   // only set game param states after receiving setup response
   useEffect(() => {
-    if (setupRes) {
-      const res = setupRes;
+    if (task === "setup" && value) {
+      const res = value;
       setBoardSize(res["board_size"]);
       setMineNum(res["mine_num"]);
       setTimeLimit(res["time_limit"]);
       setRoomNumber(res["room_number"]);
       setRivalUsername(res["rivalUsername"]);
-      setError(setupRes.error);
+      setErrorMessage(error);
     }
-  }, [setupRes]);
+  }, [value, error, task]);
   // only start game after receiving setup response
   useEffect(() => {
     if (roomOption === "NEW") {
@@ -62,7 +63,7 @@ const MineSweeper = () => {
     }
     // TODO: start game of other 2 mode
     else if (roomOption === "RANDOM") {
-      if (error === "no rooms available") {
+      if (errorMessage === "no rooms available") {
         setBoardSize(10);
         setMineNum(10);
         setTimeLimit(60);
@@ -82,16 +83,8 @@ const MineSweeper = () => {
         setStartGame(true);
       }
     }
-  }, [
-    boardSize,
-    mineNum,
-    timeLimit,
-    roomNumber,
-    rivalUsername,
-    // error,
-    // roomOption,
-  ]);
-
+  }, [boardSize, mineNum, timeLimit, roomNumber, rivalUsername]);
+*/
   const backToHomeOnClick = () => {
     setStartGame(false);
   };
@@ -136,7 +129,7 @@ const MineSweeper = () => {
               roomNumber={roomNumber}
               setRoomNumber={setRoomNumber}
               startGame={startGameOnClick}
-              error={error}
+              //error={errorMessage}
             />
           )
         ) : (

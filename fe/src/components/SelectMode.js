@@ -91,7 +91,7 @@ const SelectMode = ({
         <button className="btn" onClick={handleEnterRandomRoom}>
           Enter Random Room
         </button>
-        {error && <p style={{ marginBottom: "0px" }}>{error}</p>}
+        {error && <p style={{ marginBottom: "0px" }}>⚠️ {error}</p>}
         <Popup
           open={showEnterRoomNumber}
           position="center"
