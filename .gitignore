@@ -144,3 +144,5 @@ ehthumbs.db
 
 # docker related file
 docker-compose.yaml
+
+yarn.lock

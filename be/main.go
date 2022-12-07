@@ -44,7 +44,7 @@ func ServeHTTP() {
 		if err != nil {
 			panic(err)
 		}
-
+		g.GET("/", health)
 		public := g.Group("/socket")
 		public.GET("", handler.SocketHandler)
 		serviceAddress := os.Getenv("SERVICE_ADDRESS")
@@ -52,4 +52,10 @@ func ServeHTTP() {
 			panic(err)
 		}
 	}()
+}
+
+func health(c *gin.Context) {
+	c.JSON(200, gin.H{
+		"data": true,
+	})
 }

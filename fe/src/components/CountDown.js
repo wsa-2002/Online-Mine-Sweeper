@@ -9,7 +9,7 @@ export default function CountDown({ startTime, setCountDown, setGameStart }) {
 			const now = new Date();
 			const diff = timeDiff(now, startTime);
 			setCnt(diff);
-			if (diff === 0) {
+			if (diff <= 0) {
 				clearInterval(intervalID);
 				setTimeout(() => {
 					setCountDown(false);
