@@ -16,7 +16,7 @@ import "./css/Board.css";
 import { WebsocketContext } from "../context/websocket";
 import CountDown from "./CountDown";
 
-const Board = ({ boardSize, mineNum, backToHome }) => {
+const Board = ({ username, boardSize, mineNum, timeLimit, rivalUsername, backToHome }) => {
 	const [board, setBoard] = useState([]); // An 2-dimentional array. It is used to store the board.
 	const [nonMineCount, setNonMineCount] = useState(0); // An integer variable to store the number of cells whose value are not '💣'.
 	const [mineLocations, setMineLocations] = useState([]); // An array to store all the coordinate of '💣'.
@@ -30,8 +30,6 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 	const [startTime, setStartTime] = useState(null);
 	const [task, value, error, send] = useContext(WebsocketContext);
 
-	const username = "hello";
-	const rivalname = "hi";
 	const room_number = 100;
 
 	useEffect(() => {
@@ -91,28 +89,29 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 		setBoard(newBoard);
 	};
 
-	const revealCell = (x, y) => {
-		if (board[x][y].revealed || gameOver || board[x][y].flagged) return;
+	const revealCell = (myTurn, x, y) => {
+		if (myTurn) {
+			if (board[x][y].revealed || gameOver || board[x][y].flagged) return;
 
-		let newBoard = JSON.parse(JSON.stringify(board));
-		if (newBoard[x][y].value === "💣") {
-			for (let i = 0; i < mineLocations.length; i++) {
-				if (!newBoard[mineLocations[i][0]][mineLocations[i][1]].flagged)
-					newBoard[mineLocations[i][0]][mineLocations[i][1]].revealed = true;
-			}
-			setBoard(newBoard);
-			setGameOver(true);
-		} else {
-			let newRevealedBoard = revealed(newBoard, x, y, nonMineCount);
-			setBoard(newRevealedBoard.board);
-			setNonMineCount(newRevealedBoard.newNonMinesCount);
-			if (newRevealedBoard.newNonMinesCount === 0) {
-				console.log("win");
+			let newBoard = JSON.parse(JSON.stringify(board));
+			if (newBoard[x][y].value === "💣") {
+				for (let i = 0; i < mineLocations.length; i++) {
+					if (!newBoard[mineLocations[i][0]][mineLocations[i][1]].flagged)
+						newBoard[mineLocations[i][0]][mineLocations[i][1]].revealed = true;
+				}
+				setBoard(newBoard);
 				setGameOver(true);
-				setWin(true);
+			} else {
+				let newRevealedBoard = revealed(newBoard, x, y, nonMineCount);
+				setBoard(newRevealedBoard.board);
+				setNonMineCount(newRevealedBoard.newNonMinesCount);
+				if (newRevealedBoard.newNonMinesCount === 0) {
+					console.log("win");
+					setGameOver(true);
+					setWin(true);
+				}
 			}
 		}
-
 		// websocker here
 	};
 
@@ -142,7 +141,8 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 				<div className="boardContainer">
 					<Dashboard
 						username={username}
-						rivalname={rivalname}
+						rivalUsername={rivalUsername}
+						timeLimit={timeLimit}
 						myTurn={myTurn}
 						remainFlagNum={remainFlagNum}
 						gameOver={gameOver}
@@ -156,6 +156,7 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 									rowIdx={cell.x}
 									colIdx={cell.y}
 									detail={cell}
+									myTurn={myTurn}
 									updateFlag={updateFlag}
 									revealCell={revealCell}
 								/>

@@ -10,11 +10,10 @@ import React, { useEffect, useState } from "react";
 import "./css/Dashboard.css";
 let myTimeIntervalId;
 let rivalTimeIntervalId;
-let defaultTime = 10;
 
-export default function Dashboard({ username, rivalname, myTurn, remainFlagNum, gameOver, setGameOver }) {
-	let [myTime, setMyTime] = useState(defaultTime);
-	let [rivalTime, setRivalTime] = useState(defaultTime);
+export default function Dashboard({ username, rivalUsername, timeLimit, myTurn, remainFlagNum, gameOver, setGameOver }) {
+	let [myTime, setMyTime] = useState(timeLimit);
+	let [rivalTime, setRivalTime] = useState(timeLimit);
 	let [sTime, setSTime] = useState(0);
 
 	useEffect(() => {
@@ -25,9 +24,8 @@ export default function Dashboard({ username, rivalname, myTurn, remainFlagNum, 
 	  
 	  useEffect(() => {
 		if (gameOver) {
-		  // setSTime(0);
-		  setMyTime(defaultTime);
-		  setRivalTime(defaultTime);
+		  setMyTime(timeLimit);
+		  setRivalTime(timeLimit);
 		}
 	  }, [gameOver, myTime, rivalTime]);
 	
@@ -83,7 +81,7 @@ export default function Dashboard({ username, rivalname, myTurn, remainFlagNum, 
 			</div>
 		  </div>
 		  <div id="dashBoard_col1">
-			<p>{rivalname}</p>
+			<p>{rivalUsername}</p>
 			<div className="dashBoard_col">
 			  <p className="icon">⏰</p>
 			  {gameOver ? sTime : rivalTime}
