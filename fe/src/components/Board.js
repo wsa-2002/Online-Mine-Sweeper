@@ -112,7 +112,6 @@ const Board = ({ username, boardSize, mineNum, timeLimit, rivalUsername, backToH
 				}
 			}
 		}
-		// websocker here
 	};
 
 	const readyGame = () => {
