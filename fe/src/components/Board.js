@@ -23,7 +23,7 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 	const [gameOver, setGameOver] = useState(false); // A boolean variable. If true, means you lose the game (Game over).
 	const [remainFlagNum, setRemainFlagNum] = useState(0); // An integer variable to store the number of remain flags.
 	const [win, setWin] = useState(false); // A boolean variable. If true, means that you win the game.
-	const [myTurn, setMyTurn] = useState(false); // 1 -> this player's turn
+	const [myTurn, setMyTurn] = useState(true); // 1 -> this player's turn
 	const [countDown, setCountDown] = useState(false); // 1 -> show countdown page
 	const [gameStart, setGameStart] = useState(false); // 1 -> game start
 	const [ready, setReady] = useState(false); // 1 -> this player is ready
@@ -31,6 +31,7 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 	const [task, value, error, send] = useContext(WebsocketContext);
 
 	const username = "hello";
+	const rivalname = "hi";
 	const room_number = 100;
 
 	useEffect(() => {
@@ -111,6 +112,8 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 				setWin(true);
 			}
 		}
+
+		// websocker here
 	};
 
 	const readyGame = () => {
@@ -138,12 +141,15 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 				</button>
 				<div className="boardContainer">
 					<Dashboard
+						username={username}
+						rivalname={rivalname}
+						myTurn={myTurn}
 						remainFlagNum={remainFlagNum}
 						gameOver={gameOver}
-						gameStart={gameStart}
+						setGameOver={setGameOver}
 					/>
 					{board.map((row, cnt) => (
-						<div id={`row${cnt}`} style={{ display: "flex" }}>
+						<div id={`row${cnt}`} style={{ display: "flex", justifyContent: "center"  }}>
 							{row.map((cell, key) => (
 								<Cell
 									key={key}
