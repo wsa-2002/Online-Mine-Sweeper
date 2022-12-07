@@ -64,7 +64,7 @@ func HandleAction(username string, data ActionInput, requestTime time.Time) (*Ac
 			return &ActionOutput{
 				Status: "GAMEOVER",
 				Winner: gameInfo.User2,
-				Board:  renderBoard(board),
+				Board:  renderBoard(board, true),
 			}, nil
 		}
 	} else {
@@ -75,7 +75,7 @@ func HandleAction(username string, data ActionInput, requestTime time.Time) (*Ac
 			return &ActionOutput{
 				Status: "GAMEOVER",
 				Winner: gameInfo.User1,
-				Board:  renderBoard(board),
+				Board:  renderBoard(board, true),
 			}, nil
 		}
 	}
@@ -96,7 +96,7 @@ func HandleAction(username string, data ActionInput, requestTime time.Time) (*Ac
 			return &ActionOutput{
 				Status: "GAMEOVER",
 				Winner: winner,
-				Board:  renderBoard(board),
+				Board:  renderBoard(board, true),
 			}, nil
 		}
 		// update board
@@ -117,7 +117,7 @@ func HandleAction(username string, data ActionInput, requestTime time.Time) (*Ac
 			return &ActionOutput{
 				Status: "GAMEOVER",
 				Winner: winner,
-				Board:  renderBoard(board),
+				Board:  renderBoard(board, true),
 			}, nil
 		}
 	case "FLAG":
@@ -144,7 +144,7 @@ func HandleAction(username string, data ActionInput, requestTime time.Time) (*Ac
 
 	return &ActionOutput{
 		Status: "KEEP",
-		Board:  renderBoard(board),
+		Board:  renderBoard(board, false),
 		Turns:  turn,
 		TimeLeft: bson.M{
 			gameInfo.User1: gameInfo.User1TimeLeft,
@@ -186,13 +186,15 @@ func createBoard(boardSize int, mineNum int, initX int, initY int) [][]persisten
 	return board
 }
 
-func renderBoard(board [][]persistence.Board) [][]int {
+func renderBoard(board [][]persistence.Board, isGameOver bool) [][]int {
 	boardSize := len(board)
 	render := make([][]int, boardSize)
 	for x := 0; x < boardSize; x++ {
 		render[x] = make([]int, boardSize)
 		for y := 0; y < boardSize; y++ {
-			if board[x][y].IsRevealed {
+			if isGameOver && board[x][y].CellType == -1 {
+				render[x][y] = board[x][y].CellType
+			} else if board[x][y].IsRevealed {
 				render[x][y] = board[x][y].CellType
 			} else if board[x][y].IsFlagged {
 				render[x][y] = -2
