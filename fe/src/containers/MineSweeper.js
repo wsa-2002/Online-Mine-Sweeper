@@ -17,7 +17,7 @@ const MineSweeper = () => {
 	const [roomNumber, setRoomNumber] = useState(null);
 	const [rivalUsername, setRivalUsername] = useState(null);
 	const [errorMessage, setErrorMessage] = useState(null);
-	const [task, value, error, send] = useContext(WebsocketContext);
+	const [value, send] = useContext(WebsocketContext);
 
 	const startGameOnClick = () => {
 		const data = {
@@ -37,23 +37,23 @@ const MineSweeper = () => {
 
 	// only set game param states after receiving setup response
 	useEffect(() => {
-		if (task === "setup") {
-			if (value && !error) {
-				const res = value;
+		if (value && value.task === "setup") {
+			if (value.data && !value.error) {
+				const res = value.data;
 				setBoardSize(res["board_size"]);
 				setMineNum(res["mine_num"]);
 				setTimeLimit(res["time_limit"]);
 				setRoomNumber(res["room_number"]);
 				setRivalUsername(res["rival_username"]);
 			}
-			setErrorMessage(error);
+			setErrorMessage(value.error);
 		}
-	}, [value, error, task]);
+	}, [value]);
 
 	// only start game after receiving setup response
 	useEffect(() => {
 		if (roomOption === "NEW") {
-			if (!error && boardSize && mineNum && timeLimit && roomNumber) {
+			if (!value.error && boardSize && mineNum && timeLimit && roomNumber) {
 				// to prevent: room not found -> create new room
 				setStartGame(true);
 			}

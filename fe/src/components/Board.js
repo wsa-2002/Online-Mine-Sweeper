@@ -31,7 +31,7 @@ const Board = ({
 	const [gameStart, setGameStart] = useState(false); // 1 -> game start
 	const [ready, setReady] = useState(false); // 1 -> this player is ready
 	const [startTime, setStartTime] = useState(null);
-	const [task, value, error, send] = useContext(WebsocketContext);
+	const [value, send] = useContext(WebsocketContext);
 	const [userInfo, setUserInfo] = useState({});
 
 	useEffect(() => {
@@ -49,50 +49,54 @@ const Board = ({
 	}, []);
 
 	useEffect(() => {
-		if (task === "ready" && value) {
-			setStartTime(new Date(value.start_time));
-			let interval = 0;
-			const timeIntervalId = setInterval(() => {
-				const now = new Date();
-				interval = timeDiff(now, new Date(value.start_time));
-				if (interval <= 3) {
-					clearInterval(timeIntervalId);
-					setCountDown(true);
-					if (value.turns === userInfo.username) {
-						setMyTurn(true);
+		if (value && value.task === "ready") {
+			if (value.data && !value.error) {
+				setStartTime(new Date(value.data.start_time));
+				let interval = 0;
+				const timeIntervalId = setInterval(() => {
+					const now = new Date();
+					interval = timeDiff(now, new Date(value.data.start_time));
+					if (interval <= 3) {
+						clearInterval(timeIntervalId);
+						setCountDown(true);
+						if (value.data.turns === userInfo.username) {
+							setMyTurn(true);
+						}
 					}
-				}
-			}, 1000);
+				}, 1000);
+			}
 		}
-	}, [task, value]);
+	}, [value]);
 
 	useEffect(() => {
-		if (task === "update_board" && value) {
-			let newBoard = [];
-			for (let x = 0; x < userInfo.boardSize; x++) {
-				let subCol = [];
-				for (let y = 0; y < userInfo.boardSize; y++) {
-					subCol.push({
-						value: value.board[x][y],
-						x: x,
-						y: y,
-					});
+		if (value.task === "update_board" && value) {
+			if (value.data && !value.error) {
+				let newBoard = [];
+				for (let x = 0; x < userInfo.boardSize; x++) {
+					let subCol = [];
+					for (let y = 0; y < userInfo.boardSize; y++) {
+						subCol.push({
+							value: value.data.board[x][y],
+							x: x,
+							y: y,
+						});
+					}
+					newBoard.push(subCol);
 				}
-				newBoard.push(subCol);
-			}
-			setBoard(newBoard);
-			if (value.status === "GAMEOVER") {
-				setGameOver(true);
-				if (value.winner === userInfo.username) {
-					setWin(true);
+				setBoard(newBoard);
+				if (value.data.status === "GAMEOVER") {
+					setGameOver(true);
+					if (value.data.winner === userInfo.username) {
+						setWin(true);
+					}
+					return;
 				}
-				return;
-			}
-			if (value.turns === userInfo.username) {
-				setMyTurn(true);
+				if (value.data.turns === userInfo.username) {
+					setMyTurn(true);
+				}
 			}
 		}
-	}, [task, value]);
+	}, [value]);
 
 	const timeDiff = (now, start) => {
 		const gap = start - now;
