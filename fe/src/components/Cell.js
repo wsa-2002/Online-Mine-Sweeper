@@ -12,20 +12,11 @@ import "./css/Cell.css";
 // Nothing to do with this file.
 // The input 'detail' of Cell is one single cell which have properties of x, y, value, flagged and revealed.
 export default function Cell({
-<<<<<<< HEAD
-  rowIdx,
-  colIdx,
-  detail,
-  myTurn,
-  updateFlag,
-  revealCell,
-=======
 	rowIdx,
 	colIdx,
 	detail,
 	updateFlag,
 	revealCell,
->>>>>>> 5a95b28305b10ed0d9f769c9dbf17a31d8872c26
 }) {
 	const cellStyle = {
 		background:
@@ -39,29 +30,6 @@ export default function Cell({
 	};
 	const ID = rowIdx.toString() + "-" + colIdx.toString();
 
-<<<<<<< HEAD
-  return (
-    <div
-      onContextMenu={(e) => {
-        updateFlag(e, detail.x, detail.y);
-      }}
-      onClick={() => {
-        revealCell(myTurn, detail.x, detail.y);
-      }}
-      style={cellStyle}
-      className="cell"
-      id={ID}
-    >
-      {!detail.revealed && detail.flagged
-        ? "🚩"
-        : detail.revealed && detail.value !== 0
-        ? detail.value === "💣"
-          ? "💣"
-          : detail.value
-        : ""}
-    </div>
-  );
-=======
 	return (
 		<div
 			onContextMenu={(e) => {
@@ -83,7 +51,6 @@ export default function Cell({
 				: ""}
 		</div>
 	);
->>>>>>> 5a95b28305b10ed0d9f769c9dbf17a31d8872c26
 }
 
 const mineCheckPattern = (x, y) => {
