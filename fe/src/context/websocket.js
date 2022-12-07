@@ -21,12 +21,11 @@ export const WebsocketProvider = ({ children }) => {
 		client.onmessage = (bytestring) => {
 			var { data } = bytestring;
 			var { task, data, error } = JSON.parse(data);
-			// console.log(data);
 			if (error) {
 				console.log("server error msg: ", error);
 			}
-			setTask(task);
 			setValue(data);
+			setTask(task);
 			setError(error);
 		};
 

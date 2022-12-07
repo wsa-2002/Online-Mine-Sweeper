@@ -11,17 +11,20 @@ import Cell from "./Cell";
 import Modal from "./Modal";
 import Dashboard from "./Dashboard";
 import createBoard from "../util/createBoard";
-import { revealed } from "../util/reveal";
 import "./css/Board.css";
 import { WebsocketContext } from "../context/websocket";
 import CountDown from "./CountDown";
 
-const Board = ({ boardSize, mineNum, backToHome }) => {
-	const [board, setBoard] = useState([]); // An 2-dimentional array. It is used to store the board.
-	const [nonMineCount, setNonMineCount] = useState(0); // An integer variable to store the number of cells whose value are not '💣'.
-	const [mineLocations, setMineLocations] = useState([]); // An array to store all the coordinate of '💣'.
+const Board = ({
+	username,
+	boardSize,
+	roomNumber,
+	rivalUsername,
+	timeLimit,
+	backToHome,
+}) => {
+	const [board, setBoard] = useState([]); // An 2-dimentional array. It is used to store the board
 	const [gameOver, setGameOver] = useState(false); // A boolean variable. If true, means you lose the game (Game over).
-	const [remainFlagNum, setRemainFlagNum] = useState(0); // An integer variable to store the number of remain flags.
 	const [win, setWin] = useState(false); // A boolean variable. If true, means that you win the game.
 	const [myTurn, setMyTurn] = useState(false); // 1 -> this player's turn
 	const [countDown, setCountDown] = useState(false); // 1 -> show countdown page
@@ -29,12 +32,20 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 	const [ready, setReady] = useState(false); // 1 -> this player is ready
 	const [startTime, setStartTime] = useState(null);
 	const [task, value, error, send] = useContext(WebsocketContext);
-
-	const username = "hello";
-	const room_number = 100;
+	const [userInfo, setUserInfo] = useState({});
 
 	useEffect(() => {
 		freshBoard();
+	}, []);
+
+	useEffect(() => {
+		setUserInfo({
+			username,
+			boardSize,
+			roomNumber,
+			rivalUsername,
+			timeLimit,
+		});
 	}, []);
 
 	useEffect(() => {
@@ -47,11 +58,39 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 				if (interval <= 3) {
 					clearInterval(timeIntervalId);
 					setCountDown(true);
-					if (value.turns === username) {
+					if (value.turns === userInfo.username) {
 						setMyTurn(true);
 					}
 				}
 			}, 1000);
+		}
+	}, [task, value]);
+
+	useEffect(() => {
+		if (task === "update_board" && value) {
+			let newBoard = [];
+			for (let x = 0; x < userInfo.boardSize; x++) {
+				let subCol = [];
+				for (let y = 0; y < userInfo.boardSize; y++) {
+					subCol.push({
+						value: value.board[x][y],
+						x: x,
+						y: y,
+					});
+				}
+				newBoard.push(subCol);
+			}
+			setBoard(newBoard);
+			if (value.status === "GAMEOVER") {
+				setGameOver(true);
+				if (value.winner === userInfo.username) {
+					setWin(true);
+				}
+				return;
+			}
+			if (value.turns === userInfo.username) {
+				setMyTurn(true);
+			}
 		}
 	}, [task, value]);
 
@@ -61,64 +100,45 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 	};
 
 	const freshBoard = () => {
-		const newBoard = createBoard(boardSize, mineNum);
-		setNonMineCount(boardSize * boardSize - mineNum);
-		setRemainFlagNum(mineNum);
-		setMineLocations(newBoard.mineLocations);
-		setBoard(newBoard.board);
-	};
-
-	const restartGame = () => {
-		freshBoard();
-		setGameOver(false);
-		setWin(false);
+		const newBoard = createBoard(boardSize);
+		setBoard(newBoard);
 	};
 
 	const updateFlag = (e, x, y) => {
 		e.preventDefault();
-		let newBoard = JSON.parse(JSON.stringify(board));
-		let newFlagNum = remainFlagNum;
-		if (newBoard[x][y].revealed === true) return;
-		if (newBoard[x][y].flagged !== true && newBoard[x][y].revealed !== true) {
-			newBoard[x][y].flagged = true;
-			newFlagNum--;
-		} else {
-			newBoard[x][y].flagged = false;
-			newFlagNum++;
-		}
-		setRemainFlagNum(newFlagNum);
-		setBoard(newBoard);
+		const data = {
+			task: "action",
+			username: userInfo.username,
+			data: {
+				room_number: userInfo.roomNumber,
+				action_type: "FLAG",
+				x,
+				y,
+			},
+		};
+		send(data);
 	};
 
 	const revealCell = (x, y) => {
-		if (board[x][y].revealed || gameOver || board[x][y].flagged) return;
-
-		let newBoard = JSON.parse(JSON.stringify(board));
-		if (newBoard[x][y].value === "💣") {
-			for (let i = 0; i < mineLocations.length; i++) {
-				if (!newBoard[mineLocations[i][0]][mineLocations[i][1]].flagged)
-					newBoard[mineLocations[i][0]][mineLocations[i][1]].revealed = true;
-			}
-			setBoard(newBoard);
-			setGameOver(true);
-		} else {
-			let newRevealedBoard = revealed(newBoard, x, y, nonMineCount);
-			setBoard(newRevealedBoard.board);
-			setNonMineCount(newRevealedBoard.newNonMinesCount);
-			if (newRevealedBoard.newNonMinesCount === 0) {
-				console.log("win");
-				setGameOver(true);
-				setWin(true);
-			}
-		}
+		const data = {
+			task: "action",
+			username: userInfo.username,
+			data: {
+				room_number: userInfo.roomNumber,
+				action_type: "STEP",
+				x,
+				y,
+			},
+		};
+		send(data);
 	};
 
 	const readyGame = () => {
 		const data = {
 			task: "ready",
-			username: username,
+			username: userInfo.username,
 			data: {
-				room_number: room_number,
+				room_number: userInfo.roomNumber,
 			},
 		};
 		send(data);
@@ -137,11 +157,7 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 					Ready
 				</button>
 				<div className="boardContainer">
-					<Dashboard
-						remainFlagNum={remainFlagNum}
-						gameOver={gameOver}
-						gameStart={gameStart}
-					/>
+					<Dashboard gameOver={gameOver} gameStart={gameStart} />
 					{board.map((row, cnt) => (
 						<div id={`row${cnt}`} style={{ display: "flex" }}>
 							{row.map((cell, key) => (
@@ -157,9 +173,7 @@ const Board = ({ boardSize, mineNum, backToHome }) => {
 						</div>
 					))}
 				</div>
-				{(win || gameOver) && (
-					<Modal restartGame={restartGame} backToHome={backToHome} win={win} />
-				)}
+				{(win || gameOver) && <Modal backToHome={backToHome} win={win} />}
 				{countDown && (
 					<CountDown
 						startTime={startTime}
