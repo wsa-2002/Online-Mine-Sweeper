@@ -1,11 +1,15 @@
 import { createContext, useEffect, useState, useRef } from "react";
 
-export const WebsocketContext = createContext(null, null, null, () => {});
+export const WebsocketContext = createContext(null, () => {
+	return 1;
+});
 
 export const WebsocketProvider = ({ children }) => {
-	const [task, setTask] = useState(null);
-	const [value, setValue] = useState(null);
-	const [error, setError] = useState(null);
+	const [value, setValue] = useState({
+		task: null,
+		data: null,
+		error: null,
+	});
 
 	const ws = useRef(null);
 
@@ -21,12 +25,15 @@ export const WebsocketProvider = ({ children }) => {
 		client.onmessage = (bytestring) => {
 			var { data } = bytestring;
 			var { task, data, error } = JSON.parse(data);
+			// console.log(data);
 			if (error) {
 				console.log("server error msg: ", error);
 			}
-			setValue(data);
-			setTask(task);
-			setError(error);
+			setValue({
+				task,
+				data,
+				error,
+			});
 		};
 
 		ws.current = client;
@@ -41,7 +48,7 @@ export const WebsocketProvider = ({ children }) => {
 		bindSend(JSON.stringify(data));
 	};
 
-	const ret = [task, value, error, sendData];
+	const ret = [value, sendData];
 
 	return (
 		<WebsocketContext.Provider value={ret}>
