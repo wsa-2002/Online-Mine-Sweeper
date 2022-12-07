@@ -220,10 +220,10 @@ func recursiveRevealBoard(board *[][]persistence.Board, x int, y int) {
 	boardSize := len(*board)
 	for i := x - 1; i <= x+1; i++ {
 		for j := y - 1; j <= y+1; j++ {
-			if i < 0 || j < 0 || i > boardSize-1 || j > boardSize-1 || i == x || j == y {
+			if i < 0 || j < 0 || i > boardSize-1 || j > boardSize-1 || (i == x && j == y) {
 				continue
 			}
-			if (*board)[x][y].IsRevealed {
+			if (*board)[i][j].IsRevealed == true {
 				continue
 			}
 			if (*board)[i][j].CellType == 0 {
