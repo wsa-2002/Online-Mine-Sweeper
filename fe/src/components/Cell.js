@@ -20,13 +20,16 @@ export default function Cell({
 }) {
 	const cellStyle = {
 		background:
-			detail.value !== -3 // revealed
+			detail.value !== -3 && detail.value !== -2 // revealed
 				? detail.value === -1 // bomb
 					? "#880000"
 					: mineCheckPattern(detail.x, detail.y)
-				: checkPattern(detail.x, detail.y),
+				: checkPattern(detail.x, detail.y), // unrevealed
 		color: numColorCode(detail.value),
-		border: detail.value !== -3 ? "2px inset darkgrey" : "2px outset white",
+		border:
+			detail.value !== -3 && detail.value !== -2
+				? "2px inset darkgrey"
+				: "2px outset white",
 	};
 	const ID = rowIdx.toString() + "-" + colIdx.toString();
 

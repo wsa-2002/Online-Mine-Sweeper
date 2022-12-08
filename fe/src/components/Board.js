@@ -14,6 +14,7 @@ import createBoard from "../util/createBoard";
 import "./css/Board.css";
 import { WebsocketContext } from "../context/websocket";
 import CountDown from "./CountDown";
+import ReadyModal from "./ReadyModal";
 
 const Board = ({
 	username,
@@ -29,7 +30,7 @@ const Board = ({
 	const [myTurn, setMyTurn] = useState(false); // 1 -> this player's turn
 	const [countDown, setCountDown] = useState(false); // 1 -> show countdown page
 	const [gameStart, setGameStart] = useState(false); // 1 -> game start
-	const [ready, setReady] = useState(false); // 1 -> this player is ready
+	const [bothReady, setBothReady] = useState(false);
 	const [startTime, setStartTime] = useState(null);
 	const [value, send] = useContext(WebsocketContext);
 	const [userInfo, setUserInfo] = useState({});
@@ -51,6 +52,7 @@ const Board = ({
 	useEffect(() => {
 		if (value && value.task === "ready") {
 			if (value.data && !value.error) {
+				setBothReady(true);
 				setStartTime(new Date(value.data.start_time));
 				let interval = 0;
 				const timeIntervalId = setInterval(() => {
@@ -146,20 +148,14 @@ const Board = ({
 			},
 		};
 		send(data);
-		setReady(true);
 	};
 
 	return (
 		<div className="boardPage">
 			<div className="boardWrapper">
-				<button
-					className="btnReady"
-					disabled={ready}
-					onClick={readyGame}
-					style={countDown || gameStart ? { display: "none" } : {}}
-				>
-					Ready
-				</button>
+				{!bothReady && (
+					<ReadyModal roomNumber={userInfo.roomNumber} readyGame={readyGame} />
+				)}
 				<div className="boardContainer">
 					<Dashboard gameOver={gameOver} gameStart={gameStart} />
 					{board.map((row, cnt) => (
