@@ -27,7 +27,7 @@ const Board = ({
 	const [board, setBoard] = useState([]); // An 2-dimentional array. It is used to store the board
 	const [gameOver, setGameOver] = useState(false); // A boolean variable. If true, means you lose the game (Game over).
 	const [win, setWin] = useState(false); // A boolean variable. If true, means that you win the game.
-	const [myTurn, setMyTurn] = useState(false); // 1 -> this player's turn
+	const [myTurn, setMyTurn] = useState(true); // 1 -> this player's turn
 	const [countDown, setCountDown] = useState(false); // 1 -> show countdown page
 	const [gameStart, setGameStart] = useState(false); // 1 -> game start
 	const [bothReady, setBothReady] = useState(false);
@@ -64,6 +64,7 @@ const Board = ({
 						if (value.data.turns === userInfo.username) {
 							setMyTurn(true);
 						}
+						else { setMyTurn(false); }
 					}
 				}, 1000);
 			}
@@ -96,6 +97,7 @@ const Board = ({
 				if (value.data.turns === userInfo.username) {
 					setMyTurn(true);
 				}
+				else { setMyTurn(false); }
 			}
 		}
 	}, [value]);
@@ -110,7 +112,7 @@ const Board = ({
 		setBoard(newBoard);
 	};
 
-	const updateFlag = (e, x, y) => {
+	const updateFlag = (e, myTurn, x, y) => {
 		e.preventDefault();
 		const data = {
 			task: "action",
@@ -122,10 +124,10 @@ const Board = ({
 				y,
 			},
 		};
-		send(data);
+		if(myTurn) { send(data) };
 	};
 
-	const revealCell = (x, y) => {
+	const revealCell = (myTurn, x, y) => {
 		const data = {
 			task: "action",
 			username: userInfo.username,
@@ -136,7 +138,7 @@ const Board = ({
 				y,
 			},
 		};
-		send(data);
+		if(myTurn) { send(data) };
 	};
 
 	const readyGame = () => {
@@ -157,15 +159,24 @@ const Board = ({
 					<ReadyModal roomNumber={userInfo.roomNumber} readyGame={readyGame} />
 				)}
 				<div className="boardContainer">
-					<Dashboard gameOver={gameOver} gameStart={gameStart} />
+					<Dashboard
+						userInfo={userInfo}
+						myTurn={myTurn}
+						gameStart={gameStart}
+						gameOver={gameOver}
+						setGameOver={setGameOver}
+						win={win}
+						setWin={setWin}
+					/>
 					{board.map((row, cnt) => (
-						<div id={`row${cnt}`} style={{ display: "flex" }}>
+						<div id={`row${cnt}`} style={{ display: "flex", justifyContent: "center"  }}>
 							{row.map((cell, key) => (
 								<Cell
 									key={key}
 									rowIdx={cell.x}
 									colIdx={cell.y}
 									detail={cell}
+									myTurn={myTurn}
 									updateFlag={updateFlag}
 									revealCell={revealCell}
 								/>
