@@ -22,9 +22,9 @@ export default function Modal({ backToHome, win }) {
 			<div className="modalWrapper"></div>
 			<div className="modalContent">
 				{win ? (
-					<div className="modalResult">Win</div>
+					<div className="modalResult">You Win</div>
 				) : (
-					<div className="modalResult">You lose</div>
+					<div className="modalResult">You Lose</div>
 				)}
 				<div className="modalBtnWrapper">
 					<div className="modalBtn" onClick={backToHome}>
