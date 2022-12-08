@@ -100,28 +100,29 @@ func HandleAction(username string, data ActionInput, requestTime time.Time) (*Ac
 			}, nil
 		}
 		// update board
-		recursiveRevealBoard(&board, x, y)
-
-		// check board status
-		if isGameOver(board) {
-			gameInfo, _ = persistence.GetGameByRoomId(data.RoomNumber)
-			var winner string
-			if gameInfo.User1TimeLeft > gameInfo.User2TimeLeft {
-				winner = gameInfo.User1
-			} else {
-				winner = gameInfo.User2
-			}
-			if err = persistence.SetGameFinish(gameInfo.RoomId); err != nil {
-				return nil, err
-			}
-			return &ActionOutput{
-				Status: "GAMEOVER",
-				Winner: winner,
-				Board:  renderBoard(board, true),
-			}, nil
+		if board[x][y].IsRevealed || board[x][y].CellType == 0 {
+			recursiveRevealBoard(&board, x, y)
 		}
 	case "FLAG":
 		board[x][y].IsFlagged = !board[x][y].IsFlagged
+	}
+	// check board status
+	if isGameOver(board) {
+		gameInfo, _ = persistence.GetGameByRoomId(data.RoomNumber)
+		var winner string
+		if gameInfo.User1TimeLeft > gameInfo.User2TimeLeft {
+			winner = gameInfo.User1
+		} else {
+			winner = gameInfo.User2
+		}
+		if err = persistence.SetGameFinish(gameInfo.RoomId); err != nil {
+			return nil, err
+		}
+		return &ActionOutput{
+			Status: "GAMEOVER",
+			Winner: winner,
+			Board:  renderBoard(board, true),
+		}, nil
 	}
 	if err := persistence.SetBoard(data.RoomNumber, board); err != nil {
 		return nil, err
@@ -226,6 +227,9 @@ func recursiveRevealBoard(board *[][]persistence.Board, x int, y int) {
 				continue
 			}
 			if (*board)[i][j].IsRevealed == true {
+				continue
+			}
+			if (*board)[i][j].IsFlagged {
 				continue
 			}
 			if (*board)[i][j].CellType == 0 {
