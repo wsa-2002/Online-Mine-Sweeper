@@ -14,6 +14,7 @@ import createBoard from "../util/createBoard";
 import "./css/Board.css";
 import { WebsocketContext } from "../context/websocket";
 import CountDown from "./CountDown";
+import ReadyModal from "./ReadyModal";
 
 const Board = ({
 	username,
@@ -29,7 +30,7 @@ const Board = ({
 	const [myTurn, setMyTurn] = useState(true); // 1 -> this player's turn
 	const [countDown, setCountDown] = useState(false); // 1 -> show countdown page
 	const [gameStart, setGameStart] = useState(false); // 1 -> game start
-	const [ready, setReady] = useState(false); // 1 -> this player is ready
+	const [bothReady, setBothReady] = useState(false);
 	const [startTime, setStartTime] = useState(null);
 	const [value, send] = useContext(WebsocketContext);
 	const [userInfo, setUserInfo] = useState({});
@@ -51,6 +52,7 @@ const Board = ({
 	useEffect(() => {
 		if (value && value.task === "ready") {
 			if (value.data && !value.error) {
+				setBothReady(true);
 				setStartTime(new Date(value.data.start_time));
 				let interval = 0;
 				const timeIntervalId = setInterval(() => {
@@ -61,8 +63,9 @@ const Board = ({
 						setCountDown(true);
 						if (value.data.turns === userInfo.username) {
 							setMyTurn(true);
+						} else {
+							setMyTurn(false);
 						}
-						else { setMyTurn(false); }
 					}
 				}, 1000);
 			}
@@ -94,8 +97,9 @@ const Board = ({
 				}
 				if (value.data.turns === userInfo.username) {
 					setMyTurn(true);
+				} else {
+					setMyTurn(false);
 				}
-				else { setMyTurn(false); }
 			}
 		}
 	}, [value]);
@@ -122,7 +126,9 @@ const Board = ({
 				y,
 			},
 		};
-		if(myTurn) { send(data) };
+		if (myTurn) {
+			send(data);
+		}
 	};
 
 	const revealCell = (myTurn, x, y) => {
@@ -136,7 +142,9 @@ const Board = ({
 				y,
 			},
 		};
-		if(myTurn) { send(data) };
+		if (myTurn) {
+			send(data);
+		}
 	};
 
 	const readyGame = () => {
@@ -148,20 +156,15 @@ const Board = ({
 			},
 		};
 		send(data);
-		setReady(true);
 	};
 
 	return (
 		<div className="boardPage">
 			<div className="boardWrapper">
-				<button
-					className="btnReady"
-					disabled={ready}
-					onClick={readyGame}
-					style={countDown || gameStart ? { display: "none" } : {}}
-				>
-					Ready
-				</button>
+				{!bothReady && (
+					<ReadyModal roomNumber={userInfo.roomNumber} readyGame={readyGame} />
+				)}
+				<div className="roomNumber">Room Number : {userInfo.roomNumber}</div>
 				<div className="boardContainer">
 					<Dashboard
 						userInfo={userInfo}
@@ -173,7 +176,10 @@ const Board = ({
 						setWin={setWin}
 					/>
 					{board.map((row, cnt) => (
-						<div id={`row${cnt}`} style={{ display: "flex", justifyContent: "center"  }}>
+						<div
+							id={`row${cnt}`}
+							style={{ display: "flex", justifyContent: "center" }}
+						>
 							{row.map((cell, key) => (
 								<Cell
 									key={key}
