@@ -46,7 +46,6 @@ const Board = ({
 			rivalUsername,
 			timeLimit,
 		});
-		console.log("board rivaluserrname", userInfo.rivalUsername)
 	}, []);
 
 	useEffect(() => {
@@ -63,6 +62,7 @@ const Board = ({
 						if (value.data.turns === userInfo.username) {
 							setMyTurn(true);
 						}
+						else { setMyTurn(false); }
 					}
 				}, 1000);
 			}
@@ -95,6 +95,7 @@ const Board = ({
 				if (value.data.turns === userInfo.username) {
 					setMyTurn(true);
 				}
+				else { setMyTurn(false); }
 			}
 		}
 	}, [value]);
@@ -109,7 +110,7 @@ const Board = ({
 		setBoard(newBoard);
 	};
 
-	const updateFlag = (e, x, y) => {
+	const updateFlag = (e, myTurn, x, y) => {
 		e.preventDefault();
 		const data = {
 			task: "action",
@@ -121,10 +122,10 @@ const Board = ({
 				y,
 			},
 		};
-		send(data);
+		if(myTurn) { send(data) };
 	};
 
-	const revealCell = (x, y) => {
+	const revealCell = (myTurn, x, y) => {
 		const data = {
 			task: "action",
 			username: userInfo.username,
@@ -135,7 +136,7 @@ const Board = ({
 				y,
 			},
 		};
-		send(data);
+		if(myTurn) { send(data) };
 	};
 
 	const readyGame = () => {
@@ -168,6 +169,8 @@ const Board = ({
 						gameStart={gameStart}
 						gameOver={gameOver}
 						setGameOver={setGameOver}
+						win={win}
+						setWin={setWin}
 					/>
 					{board.map((row, cnt) => (
 						<div id={`row${cnt}`} style={{ display: "flex", justifyContent: "center"  }}>

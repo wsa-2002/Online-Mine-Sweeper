@@ -12,47 +12,49 @@ import "./css/Dashboard.css";
 let myTimeIntervalId;
 let rivalTimeIntervalId;
 
-// useEffect(() => {
-// 	setUserInfo({
-// 		username,
-// 		boardSize,
-// 		roomNumber,
-// 		rivalUsername,
-// 		timeLimit,
-// 	});
-// }, []);
-
-export default function Dashboard({ userInfo, myTurn, gameStart, gameOver, setGameOver }) {
-	const [myTime, setMyTime] = useState(userInfo.timeLimit);
-	const [rivalTime, setRivalTime] = useState(userInfo.timeLimit);
+export default function Dashboard({ userInfo, myTurn, gameStart, gameOver, setGameOver, win, setWin }) {
+	const [value, send] = useContext(WebsocketContext);
+	const [myName, setMyName] = useState('');
+	const [rival_username, setRivalUsername] = useState('');
+	const [myTime, setMyTime] = useState(60);
+	const [rivalTime, setRivalTime] = useState(60);
 	const [sTime, setSTime] = useState(0);
-	const [task, value, error, send] = useContext(WebsocketContext);
+	const [showFlag, setShowFlag] = useState(false);
 
 	useEffect(() => {
-		if (task === "update_board" && value) {
-			console.log("dashboard", task, value)
+		setMyName(userInfo.username);
+	}, [userInfo])
+
+	useEffect(() => {
+		if (value.task === "setup" && value.task) {
+			// setMyName(userInfo.username);
+			setRivalUsername(value.data.rival_username);
+			setMyTime(value.data.time_limit);
+			setRivalTime(value.data.time_limit);
 		}
-	}, []);
 
-	useEffect(() => {
-		console.log('rival username', userInfo.rivalUsername)
-		console.log('time limit', userInfo.timeLimit)
-	}, [gameStart])
+		else if (value.task === "update_board" && value.data.time_left) {
+			setMyTime(Math.round(value.data.time_left[myName]))
+			setRivalTime(Math.round(value.data.time_left[rival_username]))
+		}
+	}, [value]);
 
 	useEffect(() => {
 		if (myTime <= 0 || rivalTime <= 0) {
 		  setGameOver(true);
+		  if (myTime <= 0) { setWin(false) }
+		  else { setWin(true) }
 		}
 	  }, [myTime, rivalTime]);
 	  
-	  useEffect(() => {
+	useEffect(() => {
 		if (gameOver) {
 		  setMyTime(userInfo.timeLimit);
 		  setRivalTime(userInfo.timeLimit);
 		}
-	  }, [gameOver, myTime, rivalTime]);
+	}, [gameOver]);
 	
-	  useEffect(() => {    
+	useEffect(() => {    
 		const decrementMyTime = () => {
 		  let newTime = myTime - 1;
 		  setMyTime(newTime);
@@ -78,38 +80,54 @@ export default function Dashboard({ userInfo, myTurn, gameStart, gameOver, setGa
 		  clearInterval(myTimeIntervalId);
 		  clearInterval(rivalTimeIntervalId);
 		};
-	  }, [myTime, setMyTime, rivalTime, setRivalTime, myTurn]);
+	}, [myTime, rivalTime, myTurn, gameStart]);
 	
-	  useEffect(() => {
+	useEffect(() => {
 		if (gameOver) {
 		  clearInterval(myTimeIntervalId);
 		  clearInterval(rivalTimeIntervalId);
 		}
-	  }, [gameOver]);
+	}, [gameOver]);
 
 	return (
-		<div className="dashBoard">
-		  <div id="dashBoard_col1">
-			<p>{userInfo.username}</p>
-			<div className="dashBoard_col">
-			  <p className="icon">⏰</p>
-			  {gameOver ? sTime : myTime}
+		<div>
+		  {gameStart ? 
+		    <div className="dashBoard">
+				<div id="dashBoard_col1">
+					{myTurn ? <p className="icon">🚩</p> : <></>}
+					<p>{myName}</p>
+					<div className="dashBoard_col">
+						<p className="icon">⏰</p>
+						{gameOver ? sTime : myTime}
+					</div>
+				</div>
+				<div id="dashBoard_col1">
+					{myTurn ? <></> : <p className="icon">🚩</p>}
+					<p>{rival_username}</p>
+					<div className="dashBoard_col">
+						<p className="icon">⏰</p>
+						{gameOver ? sTime : rivalTime}
+					</div>
+				</div>
+			</div> 
+			: 
+			<div className="dashBoard">
+				<div id="dashBoard_col1">
+					<p>{myName}</p>
+					<div className="dashBoard_col">
+						<p className="icon">⏰</p>
+						{gameOver ? sTime : myTime}
+					</div>
+				</div>
+				<div id="dashBoard_col1">
+					<p>{rival_username}</p>
+					<div className="dashBoard_col">
+						<p className="icon">⏰</p>
+						{gameOver ? sTime : rivalTime}
+					</div>
+				</div>
 			</div>
-		  </div>
-		  <div id="dashBoard_col1">
-			<p>   </p>
-			<div className="dashBoard_col">
-			  <p className="icon">🚩</p>
-			  {/* {remainFlagNum} */}
-			</div>
-		  </div>
-		  <div id="dashBoard_col1">
-			<p>{userInfo.rivalUsername}</p>
-			<div className="dashBoard_col">
-			  <p className="icon">⏰</p>
-			  {gameOver ? sTime : rivalTime}
-			</div>
-		  </div>
+		  }  
 		</div>
 	  );
 }
