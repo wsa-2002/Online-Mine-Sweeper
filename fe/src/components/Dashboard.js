@@ -6,15 +6,38 @@
   Copyright     [ 2021 10 ]
 ****************************************************************************/
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { WebsocketContext } from "../context/websocket";
 import "./css/Dashboard.css";
 let myTimeIntervalId;
 let rivalTimeIntervalId;
 
-export default function Dashboard({ username, rivalUsername, timeLimit, myTurn, remainFlagNum, gameOver, setGameOver }) {
-	let [myTime, setMyTime] = useState(timeLimit);
-	let [rivalTime, setRivalTime] = useState(timeLimit);
-	let [sTime, setSTime] = useState(0);
+// useEffect(() => {
+// 	setUserInfo({
+// 		username,
+// 		boardSize,
+// 		roomNumber,
+// 		rivalUsername,
+// 		timeLimit,
+// 	});
+// }, []);
+
+export default function Dashboard({ userInfo, myTurn, gameStart, gameOver, setGameOver }) {
+	const [myTime, setMyTime] = useState(userInfo.timeLimit);
+	const [rivalTime, setRivalTime] = useState(userInfo.timeLimit);
+	const [sTime, setSTime] = useState(0);
+	const [task, value, error, send] = useContext(WebsocketContext);
+
+	useEffect(() => {
+		if (task === "update_board" && value) {
+			console.log("dashboard", task, value)
+		}
+	}, []);
+
+	useEffect(() => {
+		console.log('rival username', userInfo.rivalUsername)
+		console.log('time limit', userInfo.timeLimit)
+	}, [gameStart])
 
 	useEffect(() => {
 		if (myTime <= 0 || rivalTime <= 0) {
@@ -24,8 +47,8 @@ export default function Dashboard({ username, rivalUsername, timeLimit, myTurn, 
 	  
 	  useEffect(() => {
 		if (gameOver) {
-		  setMyTime(timeLimit);
-		  setRivalTime(timeLimit);
+		  setMyTime(userInfo.timeLimit);
+		  setRivalTime(userInfo.timeLimit);
 		}
 	  }, [gameOver, myTime, rivalTime]);
 	
@@ -40,12 +63,12 @@ export default function Dashboard({ username, rivalUsername, timeLimit, myTurn, 
 		  setRivalTime(newTime);
 		}
 		
-		if (myTurn) {
+		if (myTurn && gameStart) {
 		  myTimeIntervalId = setTimeout(() => {
 			decrementMyTime();
 		  }, 1000);
 		}
-		else {
+		else if (gameStart) {
 		  rivalTimeIntervalId = setTimeout(() => {
 			decrementRivalTime();
 		  }, 1000);
@@ -67,7 +90,7 @@ export default function Dashboard({ username, rivalUsername, timeLimit, myTurn, 
 	return (
 		<div className="dashBoard">
 		  <div id="dashBoard_col1">
-			<p>{username}</p>
+			<p>{userInfo.username}</p>
 			<div className="dashBoard_col">
 			  <p className="icon">⏰</p>
 			  {gameOver ? sTime : myTime}
@@ -77,11 +100,11 @@ export default function Dashboard({ username, rivalUsername, timeLimit, myTurn, 
 			<p>   </p>
 			<div className="dashBoard_col">
 			  <p className="icon">🚩</p>
-			  {remainFlagNum}
+			  {/* {remainFlagNum} */}
 			</div>
 		  </div>
 		  <div id="dashBoard_col1">
-			<p>{rivalUsername}</p>
+			<p>{userInfo.rivalUsername}</p>
 			<div className="dashBoard_col">
 			  <p className="icon">⏰</p>
 			  {gameOver ? sTime : rivalTime}

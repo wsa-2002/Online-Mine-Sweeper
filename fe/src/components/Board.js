@@ -46,6 +46,7 @@ const Board = ({
 			rivalUsername,
 			timeLimit,
 		});
+		console.log("board rivaluserrname", userInfo.rivalUsername)
 	}, []);
 
 	useEffect(() => {
@@ -69,6 +70,7 @@ const Board = ({
 	useEffect(() => {
 		if (task === "update_board" && value) {
 			let newBoard = [];
+			console.log(value.board);
 			for (let x = 0; x < userInfo.boardSize; x++) {
 				let subCol = [];
 				for (let y = 0; y < userInfo.boardSize; y++) {
@@ -158,11 +160,8 @@ const Board = ({
 				</button>
 				<div className="boardContainer">
 					<Dashboard
-						username={username}
-						rivalUsername={rivalUsername}
-						timeLimit={timeLimit}
+						userInfo={userInfo}
 						myTurn={myTurn}
-						remainFlagNum={remainFlagNum}
 						gameStart={gameStart}
 						gameOver={gameOver}
 						setGameOver={setGameOver}
