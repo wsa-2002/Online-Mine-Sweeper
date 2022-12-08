@@ -102,6 +102,13 @@ const MineSweeper = () => {
 
 	const backToHomeOnClick = () => {
 		setStartGame(false);
+		setRoomOption(null);
+		setRoomType("PUBLIC");
+		setBoardSize(null);
+		setMineNum(null);
+		setTimeLimit(null);
+		setRivalUsername(null);
+		setRoomNumber(null)
 	};
 
 	return (
