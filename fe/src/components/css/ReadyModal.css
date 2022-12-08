@@ -1,0 +1,60 @@
+.readyModalContent{
+  margin: auto 30%;
+  width: auto;
+  padding: 20% auto;
+  background-color: lightblue;
+  border-radius: 25px;
+  height: max-content;
+}
+
+.readyModalText {
+  font-size: 40px;
+  padding-bottom: 10px;
+  padding-top: 20px;
+}
+
+.readyModalSubText {
+  font-size: 30px;
+  padding-bottom: 10px;
+  padding-top: 20px;
+}
+
+.readyBtnWrapper{
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  height: 50%;
+}
+
+
+
+.readybtn{
+  font-size: 30px;
+  padding: 10px 30px;
+  border: transparent;
+  border-radius: 25px;
+  margin: 15px auto;
+  color: lightblue;
+  background-color: #0f0f4b;
+  border: 3px solid transparent;
+}
+
+.readybtn:hover:not(:disabled){
+  cursor: pointer;
+  color: #0f0f4b;
+  background-color: lightblue;
+  border: 3px solid #0f0f4b;
+}
+
+.readybtn:disabled{
+  cursor: pointer;
+  background-color: #cccccc;
+  color: #666666;
+  border: 3px solid transparent;
+}
+
+.waitMsg{
+  padding-bottom: 20px;
+  margin-top: -10px;
+}
