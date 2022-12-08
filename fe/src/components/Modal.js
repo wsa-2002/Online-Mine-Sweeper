@@ -24,7 +24,7 @@ export default function Modal({ backToHome, win }) {
 				{win ? (
 					<div className="modalResult">Win</div>
 				) : (
-					<div className="modalResult">Game Over</div>
+					<div className="modalResult">You lose</div>
 				)}
 				<div className="modalBtnWrapper">
 					<div className="modalBtn" onClick={backToHome}>

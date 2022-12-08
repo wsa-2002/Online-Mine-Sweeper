@@ -14,13 +14,20 @@
     
     /* height: 100%; */
 }
-.boardWrapper{
+/* .boardWrapper{
     position:absolute;
     height: 100%;
     width: 100%;
-    
-    
+} */
+
+.roomNumber{
+    font-size: 20px;
+    position: absolute;
+    top: 17%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
+
 .boardContainer{
     border: 10px solid darkgray;
     border-radius: 10px;

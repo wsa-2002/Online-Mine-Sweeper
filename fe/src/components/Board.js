@@ -63,8 +63,9 @@ const Board = ({
 						setCountDown(true);
 						if (value.data.turns === userInfo.username) {
 							setMyTurn(true);
+						} else {
+							setMyTurn(false);
 						}
-						else { setMyTurn(false); }
 					}
 				}, 1000);
 			}
@@ -96,8 +97,9 @@ const Board = ({
 				}
 				if (value.data.turns === userInfo.username) {
 					setMyTurn(true);
+				} else {
+					setMyTurn(false);
 				}
-				else { setMyTurn(false); }
 			}
 		}
 	}, [value]);
@@ -124,7 +126,9 @@ const Board = ({
 				y,
 			},
 		};
-		if(myTurn) { send(data) };
+		if (myTurn) {
+			send(data);
+		}
 	};
 
 	const revealCell = (myTurn, x, y) => {
@@ -138,7 +142,9 @@ const Board = ({
 				y,
 			},
 		};
-		if(myTurn) { send(data) };
+		if (myTurn) {
+			send(data);
+		}
 	};
 
 	const readyGame = () => {
@@ -158,6 +164,7 @@ const Board = ({
 				{!bothReady && (
 					<ReadyModal roomNumber={userInfo.roomNumber} readyGame={readyGame} />
 				)}
+				<div className="roomNumber">Room Number : {userInfo.roomNumber}</div>
 				<div className="boardContainer">
 					<Dashboard
 						userInfo={userInfo}
@@ -169,7 +176,10 @@ const Board = ({
 						setWin={setWin}
 					/>
 					{board.map((row, cnt) => (
-						<div id={`row${cnt}`} style={{ display: "flex", justifyContent: "center"  }}>
+						<div
+							id={`row${cnt}`}
+							style={{ display: "flex", justifyContent: "center" }}
+						>
 							{row.map((cell, key) => (
 								<Cell
 									key={key}

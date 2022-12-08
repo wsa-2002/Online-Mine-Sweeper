@@ -28,8 +28,8 @@ export default function ReadyModal({ roomNumber, readyGame }) {
 		<div className="modal" style={{ opacity: 1 }}>
 			<div className="modalWrapper"></div>
 			<div className="readyModalContent">
-				<div className="readyModalText">Room number : {roomNumber}</div>
-				<div className="readyModalSubText">Press Ready to go</div>
+				<div className="readyModalText">Room Number : {roomNumber}</div>
+				<div className="readyModalSubText">Press Ready to go!</div>
 				<div className="readyBtnWrapper">
 					<button className="readybtn" disabled={disabled} onClick={onReady}>
 						Ready
