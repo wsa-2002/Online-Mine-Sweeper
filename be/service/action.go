@@ -81,6 +81,11 @@ func HandleAction(username string, data ActionInput, requestTime time.Time) (*Ac
 	}
 	switch data.ActionType {
 	case "STEP":
+		// update board
+		if board[x][y].IsRevealed || board[x][y].CellType == 0 {
+			board[x][y].IsRevealed = true
+			recursiveRevealBoard(&board, x, y)
+		}
 		board[x][y].IsRevealed = true
 		// cond 1: if step on a mine
 		if board[x][y].CellType == -1 {
@@ -99,10 +104,7 @@ func HandleAction(username string, data ActionInput, requestTime time.Time) (*Ac
 				Board:  renderBoard(board, true),
 			}, nil
 		}
-		// update board
-		if board[x][y].IsRevealed || board[x][y].CellType == 0 {
-			recursiveRevealBoard(&board, x, y)
-		}
+
 	case "FLAG":
 		board[x][y].IsFlagged = !board[x][y].IsFlagged
 	}
