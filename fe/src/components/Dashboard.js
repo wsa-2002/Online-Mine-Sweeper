@@ -116,14 +116,14 @@ export default function Dashboard({ userInfo, myTurn, gameStart, gameOver, setGa
 					<p>{myName}</p>
 					<div className="dashBoard_col">
 						<p className="icon">⏰</p>
-						{gameOver ? sTime : myTime}
+						{gameOver ? <p>{sTime}</p> : <p>{myTime}</p>}
 					</div>
 				</div>
 				<div id="dashBoard_col1">
 					<p>{rival_username}</p>
 					<div className="dashBoard_col">
 						<p className="icon">⏰</p>
-						{gameOver ? sTime : rivalTime}
+						{gameOver ? <p>{sTime}</p> : <p>{myTime}</p>}
 					</div>
 				</div>
 			</div>
