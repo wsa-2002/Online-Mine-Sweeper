@@ -57,21 +57,6 @@ func CreateGame(creatorUsername string, roomId int, roomType string, mineNum int
 	return &newGame, nil
 }
 
-func UserIsInGame(username string) bool {
-	collection := DB.Collection(gameCollectionName)
-	filter := bson.D{
-		{"$or", bson.A{
-			bson.D{{"username1", username}},
-			bson.D{{"username2", username}},
-		}},
-		{
-			"is_finished", false,
-		},
-	}
-	count, _ := collection.CountDocuments(context.TODO(), filter)
-	return count > 0
-}
-
 func GetRandomGame() (*Game, error) {
 	collection := DB.Collection(gameCollectionName)
 	match := bson.D{

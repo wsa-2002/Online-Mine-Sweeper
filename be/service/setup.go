@@ -27,9 +27,6 @@ type SetUpOutput struct {
 const MaxRoomId = 1000
 
 func SetUp(username string, data SetUpInput) (*SetUpOutput, error) {
-	if persistence.UserIsInGame(username) {
-		return nil, errors.New("username is used")
-	}
 	switch data.RoomOption {
 	case "NEW":
 		roomId := rand.Intn(MaxRoomId)
