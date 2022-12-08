@@ -16,6 +16,7 @@
     text-align: center;
     display: flex;
     justify-content: center;
+    align-items: flex-end;
 }
 .dashBoard_col{
     display: flex;
@@ -32,9 +33,6 @@
     display:inline;
     margin: 0 auto;
     text-align: center;
-}
-#dashBoard_col2{
-    display:inline;
-    margin: 0 auto;
-    text-align: center;
+    padding-left: 2px;
+    padding-right: 2px;
 }

@@ -15,6 +15,7 @@ export default function Cell({
 	rowIdx,
 	colIdx,
 	detail,
+	myTurn,
 	updateFlag,
 	revealCell,
 }) {
@@ -33,10 +34,10 @@ export default function Cell({
 	return (
 		<div
 			onContextMenu={(e) => {
-				updateFlag(e, detail.x, detail.y);
+				updateFlag(e, myTurn, detail.x, detail.y);
 			}}
 			onClick={() => {
-				revealCell(detail.x, detail.y);
+				revealCell(myTurn, detail.x, detail.y);
 			}}
 			style={cellStyle}
 			className="cell"
