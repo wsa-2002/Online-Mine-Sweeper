@@ -21,11 +21,8 @@
 } */
 
 .roomNumber{
-    font-size: 20px;
-    position: absolute;
-    top: 17%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    font-size: 30px;
+    margin-top: 90px;
 }
 
 .boardContainer{
