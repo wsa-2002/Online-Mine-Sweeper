@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"be/persistence"
 	"be/service"
 	"encoding/json"
 	"errors"
@@ -67,6 +68,15 @@ func SocketHandler(c *gin.Context) {
 		}
 		username := socketData.Username
 		switch socketData.Task {
+		case "checkUsername":
+			_ = persistence.ScanFinishGame()
+			if persistence.UserIsInGame(username) {
+				handleResponse(ws, "checkUsername", nil, errors.New("username is used"))
+			} else {
+				handleResponse(ws, "checkUsername", struct {
+					isValid bool `bson:"is_valid"`
+				}{true}, nil)
+			}
 		case "setup":
 			var data service.SetUpInput
 			if err := json.Unmarshal(*socketData.Data, &data); err != nil {

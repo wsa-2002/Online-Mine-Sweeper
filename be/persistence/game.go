@@ -27,6 +27,7 @@ type Game struct {
 	LastResponseTime time.Time `bson:"last_response_time"`
 	Winner           string    `bson:"winner"`
 	Board            [][]Board `bson:"board"`
+	MaxEndTime       time.Time `bson:"max_end_time"`
 }
 
 type Board struct {
@@ -137,13 +138,14 @@ func CheckReadyStatus(roomId int) (bool, error) {
 	return false, nil
 }
 
-func SetGameStart(roomId int, startTime time.Time, turn string) error {
+func SetGameStart(roomId int, startTime time.Time, turn string, timeLimit int) error {
 	collection := DB.Collection(gameCollectionName)
 	filter := bson.D{{"room_id", roomId}}
 	update := bson.D{{"$set", bson.D{
 		{"start_time", startTime},
 		{"turn", turn},
 		{"last_response_time", startTime},
+		{"max_end_time", startTime.Add(time.Second * 2 * time.Duration(timeLimit))},
 	}}}
 	_, err := collection.UpdateOne(context.TODO(), filter, update)
 	return err
@@ -184,5 +186,14 @@ func SetGameFinish(roomId int) error {
 	filter := bson.D{{"room_id", roomId}}
 	update := bson.D{{"$set", bson.D{{"is_finished", true}}}}
 	_, err := collection.UpdateOne(context.TODO(), filter, update)
+	return err
+}
+
+func ScanFinishGame() error {
+	now := time.Now()
+	collection := DB.Collection(gameCollectionName)
+	filter := bson.D{{"max_end_time", bson.D{{"$lt", now}}}}
+	update := bson.D{{"$set", bson.D{{"is_finished", true}}}}
+	_, err := collection.UpdateMany(context.TODO(), filter, update)
 	return err
 }

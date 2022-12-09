@@ -16,11 +16,12 @@ type ActionInput struct {
 }
 
 type ActionOutput struct {
-	Status   string      `json:"status"`
-	Winner   string      `json:"winner"`
-	Turns    string      `json:"turns"`
-	TimeLeft interface{} `json:"time_left"`
-	Board    [][]int     `json:"board"`
+	Status         string      `json:"status"`
+	Winner         string      `json:"winner"`
+	Turns          string      `json:"turns"`
+	TimeLeft       interface{} `json:"time_left"`
+	Board          [][]int     `json:"board"`
+	GameOverReason string      `json:"game_over_reason"`
 }
 
 type mineLocation struct {
@@ -62,9 +63,10 @@ func HandleAction(username string, data ActionInput, requestTime time.Time) (*Ac
 				return nil, err
 			}
 			return &ActionOutput{
-				Status: "GAMEOVER",
-				Winner: gameInfo.User2,
-				Board:  renderBoard(board, true),
+				Status:         "GAMEOVER",
+				Winner:         gameInfo.User2,
+				Board:          renderBoard(board, true),
+				GameOverReason: "time's up",
 			}, nil
 		}
 	} else {
@@ -73,9 +75,10 @@ func HandleAction(username string, data ActionInput, requestTime time.Time) (*Ac
 				return nil, err
 			}
 			return &ActionOutput{
-				Status: "GAMEOVER",
-				Winner: gameInfo.User1,
-				Board:  renderBoard(board, true),
+				Status:         "GAMEOVER",
+				Winner:         gameInfo.User1,
+				Board:          renderBoard(board, true),
+				GameOverReason: "time's up",
 			}, nil
 		}
 	}
@@ -99,9 +102,10 @@ func HandleAction(username string, data ActionInput, requestTime time.Time) (*Ac
 				return nil, err
 			}
 			return &ActionOutput{
-				Status: "GAMEOVER",
-				Winner: winner,
-				Board:  renderBoard(board, true),
+				Status:         "GAMEOVER",
+				Winner:         winner,
+				Board:          renderBoard(board, true),
+				GameOverReason: "dead",
 			}, nil
 		}
 
@@ -121,9 +125,10 @@ func HandleAction(username string, data ActionInput, requestTime time.Time) (*Ac
 			return nil, err
 		}
 		return &ActionOutput{
-			Status: "GAMEOVER",
-			Winner: winner,
-			Board:  renderBoard(board, true),
+			Status:         "GAMEOVER",
+			Winner:         winner,
+			Board:          renderBoard(board, true),
+			GameOverReason: "mines all found",
 		}, nil
 	}
 	if err := persistence.SetBoard(data.RoomNumber, board); err != nil {

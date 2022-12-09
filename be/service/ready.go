@@ -36,7 +36,7 @@ func HandleReady(username string, data ReadyInput) (*ReadyOutput, error) {
 	}
 	if ready {
 		startTime := time.Now().Add(time.Second * 4)
-		err = persistence.SetGameStart(gameInfo.RoomId, startTime, gameInfo.User1)
+		err = persistence.SetGameStart(gameInfo.RoomId, startTime, gameInfo.User1, gameInfo.TimeLimit)
 		if err != nil {
 			return nil, err
 		}

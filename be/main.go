@@ -3,6 +3,7 @@ package main
 import (
 	"be/handler"
 	"be/persistence"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"math/rand"
@@ -39,6 +40,7 @@ func main() {
 func ServeHTTP() {
 	go func() {
 		g := gin.New()
+		g.Use(cors.Default())
 		g.Use(gin.Recovery())
 		err := g.SetTrustedProxies(nil)
 		if err != nil {
@@ -55,6 +57,7 @@ func ServeHTTP() {
 }
 
 func health(c *gin.Context) {
+	_ = persistence.ScanFinishGame()
 	c.JSON(200, gin.H{
 		"data": true,
 	})
