@@ -131,7 +131,7 @@ const Board = ({
     }
   };
 
-  const revealCell = (myTurn, x, y) => {
+  const revealCell = (gameStart, myTurn, x, y) => {
     const data = {
       task: "action",
       username: userInfo.username,
@@ -142,7 +142,7 @@ const Board = ({
         y,
       },
     };
-    if (myTurn) {
+    if (gameStart && myTurn) {
       send(data);
     }
   };
@@ -187,6 +187,7 @@ const Board = ({
                   rowIdx={cell.x}
                   colIdx={cell.y}
                   detail={cell}
+                  gameStart={gameStart}
                   myTurn={myTurn}
                   updateFlag={updateFlag}
                   revealCell={revealCell}
