@@ -11,10 +11,15 @@ import "./css/Modal.css";
 
 export default function Modal({ backToHome, win, overReason }) {
 	const [render, setRender] = useState(false);
+	const [reason, setReason] = useState(overReason);
 	useEffect(() => {
 		setTimeout(() => {
 			setRender(true);
 		}, 1000);
+	}, []);
+
+	useEffect(() => {
+		setReason(overReason);
 	}, []);
 
 	return (
@@ -26,7 +31,7 @@ export default function Modal({ backToHome, win, overReason }) {
 				) : (
 					<div className="modalResult">You Lose</div>
 				)}
-				<p className="modalSubText">{overReason}</p>
+				<p className="modalSubText">{reason}</p>
 				<div className="modalBtnWrapper">
 					<div className="modalBtn" onClick={backToHome}>
 						Back to Home

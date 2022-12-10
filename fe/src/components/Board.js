@@ -104,7 +104,9 @@ const Board = ({
 								break;
 							case "mines all found":
 								setOverReason(
-									`Mines All Found. You get ${timediff} more seconds left.`
+									`Mines All Found. You get${
+										timediff ? " " + timediff : ""
+									} more seconds left.`
 								);
 								break;
 							default:
@@ -121,7 +123,9 @@ const Board = ({
 								break;
 							case "mines all found":
 								setOverReason(
-									`Mines All Found. You get ${timediff} less seconds left.`
+									`Mines All Found. You get ${
+										timediff ? " " + timediff : ""
+									} less seconds left.`
 								);
 								break;
 							default:
