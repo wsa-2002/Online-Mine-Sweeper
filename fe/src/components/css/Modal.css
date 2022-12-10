@@ -25,12 +25,11 @@
     height: 30%;
 }
 .modalContent{
-    margin: auto 20%;
+    margin: auto 30%;
     justify-content: center;
     text-align: center;
-    height: 25%;
+    height: 40%;
     width: auto;
-    padding: auto;
     background-color: lightblue;
     border-radius: 25px;
     
@@ -41,11 +40,23 @@
     margin: auto;
     font-size: 50px;
     font-weight: 700;
-    height: 50%;
+    height: 40%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
+
+.modalSubText {
+    color: #0f0f4b;
+    width: 100%;
+    margin-top: 0px;
+    margin-bottom: 3px;
+    font-size: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .modalBtnWrapper{
     display: flex;
     width: 100%;
@@ -60,10 +71,7 @@
     font-size: 25px;
     font-weight: 300;
     border-radius: 25px;
-    height: 60%;
-    width: 50%;
-    margin: auto 5% ;
-    
+    padding: 10px 30px;
 
     display: flex;
     align-items: center;
