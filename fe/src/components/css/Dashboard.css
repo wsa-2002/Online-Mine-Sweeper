@@ -30,9 +30,14 @@
     padding: 0 5px;
 }
 #dashBoard_col1{
-    display:inline;
+    display: inline;
     margin: 0 auto;
     text-align: center;
-    padding-left: 2px;
-    padding-right: 2px;
+    font-size: 20px;
+    /* padding-left: 2px; */
+    /* padding-right: 2px; */
+}
+
+#dashBoard_col1 p {
+    margin: 5px;
 }
