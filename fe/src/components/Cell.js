@@ -15,6 +15,7 @@ export default function Cell({
 	rowIdx,
 	colIdx,
 	detail,
+	gameStart,
 	myTurn,
 	updateFlag,
 	revealCell,
@@ -40,7 +41,7 @@ export default function Cell({
 				updateFlag(e, myTurn, detail.x, detail.y);
 			}}
 			onClick={() => {
-				revealCell(myTurn, detail.x, detail.y);
+				revealCell(gameStart, myTurn, detail.x, detail.y);
 			}}
 			style={cellStyle}
 			className="cell"
