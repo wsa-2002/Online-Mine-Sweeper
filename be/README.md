@@ -6,7 +6,7 @@
 cp .env.example .env
 cp docker-compose.yaml.example docker-compose.yaml
 ```
-And fill in necessary environment variables in `.env`, then run
+And fill in necessary environment variables in `.env` and `docker-compose.yaml`, then run
 
 ```shell
 docker-compose up --build -d
