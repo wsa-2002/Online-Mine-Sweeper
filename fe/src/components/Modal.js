@@ -9,7 +9,7 @@
 import React, { useEffect, useState } from "react";
 import "./css/Modal.css";
 
-export default function Modal({ backToHome, win }) {
+export default function Modal({ backToHome, win, overReason }) {
 	const [render, setRender] = useState(false);
 	useEffect(() => {
 		setTimeout(() => {
@@ -26,6 +26,7 @@ export default function Modal({ backToHome, win }) {
 				) : (
 					<div className="modalResult">You Lose</div>
 				)}
+				<p className="modalSubText">{overReason}</p>
 				<div className="modalBtnWrapper">
 					<div className="modalBtn" onClick={backToHome}>
 						Back to Home

@@ -12,10 +12,20 @@ import "./css/Dashboard.css";
 let myTimeIntervalId;
 let rivalTimeIntervalId;
 
-export default function Dashboard({ userInfo, myTurn, gameStart, gameOver, setGameOver, win, setWin }) {
+export default function Dashboard({
+	userInfo,
+	myTurn,
+	gameStart,
+	gameOver,
+	setGameOver,
+	win,
+	setWin,
+	setOverReason,
+	setTimediff,
+}) {
 	const [value, send] = useContext(WebsocketContext);
-	const [myName, setMyName] = useState('');
-	const [rival_username, setRivalUsername] = useState('');
+	const [myName, setMyName] = useState("");
+	const [rival_username, setRivalUsername] = useState("");
 	const [myTime, setMyTime] = useState(60);
 	const [rivalTime, setRivalTime] = useState(60);
 	const [sTime, setSTime] = useState(0);
@@ -23,7 +33,7 @@ export default function Dashboard({ userInfo, myTurn, gameStart, gameOver, setGa
 
 	useEffect(() => {
 		setMyName(userInfo.username);
-	}, [userInfo])
+	}, [userInfo]);
 
 	useEffect(() => {
 		if (value.task === "setup" && value.task) {
@@ -31,103 +41,111 @@ export default function Dashboard({ userInfo, myTurn, gameStart, gameOver, setGa
 			setRivalUsername(value.data.rival_username);
 			setMyTime(value.data.time_limit);
 			setRivalTime(value.data.time_limit);
-		}
-
-		else if (value.task === "update_board" && value.data.time_left) {
-			setMyTime(Math.round(value.data.time_left[myName]))
-			setRivalTime(Math.round(value.data.time_left[rival_username]))
+		} else if (value.task === "update_board" && value.data.time_left) {
+			setMyTime(Math.round(value.data.time_left[myName]));
+			setRivalTime(Math.round(value.data.time_left[rival_username]));
+			setTimediff(
+				Math.abs(
+					Math.round(value.data.time_left[myName]) -
+						Math.round(value.data.time_left[rival_username])
+				)
+			);
 		}
 	}, [value]);
 
 	useEffect(() => {
 		if (myTime <= 0 || rivalTime <= 0) {
-		  setGameOver(true);
-		  if (myTime <= 0) { setWin(false) }
-		  else { setWin(true) }
+			setGameOver(true);
+			if (myTime <= 0) {
+				setWin(false);
+				setOverReason("Time's Up");
+			} else {
+				setWin(true);
+				setOverReason("Rival's Time's Up");
+			}
 		}
-	  }, [myTime, rivalTime]);
-	  
+	}, [myTime, rivalTime]);
+
 	useEffect(() => {
 		if (gameOver) {
-		  setMyTime(userInfo.timeLimit);
-		  setRivalTime(userInfo.timeLimit);
+			setMyTime(userInfo.timeLimit);
+			setRivalTime(userInfo.timeLimit);
 		}
 	}, [gameOver]);
-	
-	useEffect(() => {    
+
+	useEffect(() => {
 		const decrementMyTime = () => {
-		  let newTime = myTime - 1;
-		  setMyTime(newTime);
-		}
-	
+			let newTime = myTime - 1;
+			setMyTime(newTime);
+		};
+
 		const decrementRivalTime = () => {
-		  let newTime = rivalTime - 1;
-		  setRivalTime(newTime);
-		}
-		
+			let newTime = rivalTime - 1;
+			setRivalTime(newTime);
+		};
+
 		if (myTurn && gameStart) {
-		  myTimeIntervalId = setTimeout(() => {
-			decrementMyTime();
-		  }, 1000);
+			myTimeIntervalId = setTimeout(() => {
+				decrementMyTime();
+			}, 1000);
+		} else if (gameStart) {
+			rivalTimeIntervalId = setTimeout(() => {
+				decrementRivalTime();
+			}, 1000);
 		}
-		else if (gameStart) {
-		  rivalTimeIntervalId = setTimeout(() => {
-			decrementRivalTime();
-		  }, 1000);
-		}
-	
+
 		return () => {
-		  clearInterval(myTimeIntervalId);
-		  clearInterval(rivalTimeIntervalId);
+			clearInterval(myTimeIntervalId);
+			clearInterval(rivalTimeIntervalId);
 		};
 	}, [myTime, rivalTime, myTurn, gameStart]);
-	
+
 	useEffect(() => {
 		if (gameOver) {
-		  clearInterval(myTimeIntervalId);
-		  clearInterval(rivalTimeIntervalId);
+			clearInterval(myTimeIntervalId);
+			clearInterval(rivalTimeIntervalId);
 		}
 	}, [gameOver]);
 
 	return (
 		<div>
-		  {gameStart ? 
-		    <div className="dashBoard">
-				<div id="dashBoard_col1">
-					{myTurn ? <p className="icon">🚩</p> : <></>}
-					<p>{myName}</p>
-					<div className="dashBoard_col">
-						<p className="icon">⏰</p>
-						{gameOver ? <p>{sTime}</p>  : <p>{myTime}</p>}
+			{gameStart ? (
+				<div className="dashBoard">
+					<div id="dashBoard_col1">
+						{myTurn ? <p className="icon">🚩</p> : <></>}
+						<p>{myName}</p>
+						<div className="dashBoard_col">
+							<p className="icon">⏰</p>
+							{gameOver ? <p>{sTime}</p> : <p>{myTime}</p>}
+						</div>
+					</div>
+					<div id="dashBoard_col1">
+						{myTurn ? <></> : <p className="icon">🚩</p>}
+						<p>{rival_username}</p>
+						<div className="dashBoard_col">
+							<p className="icon">⏰</p>
+							{gameOver ? <p>{sTime}</p> : rivalTime}
+						</div>
 					</div>
 				</div>
-				<div id="dashBoard_col1">
-					{myTurn ? <></> : <p className="icon">🚩</p>}
-					<p>{rival_username}</p>
-					<div className="dashBoard_col">
-						<p className="icon">⏰</p>
-						{gameOver ? <p>{sTime}</p>  : rivalTime}
+			) : (
+				<div className="dashBoard">
+					<div id="dashBoard_col1">
+						<p>{myName}</p>
+						<div className="dashBoard_col">
+							<p className="icon">⏰</p>
+							{gameOver ? <p>{sTime}</p> : <p>{myTime}</p>}
+						</div>
+					</div>
+					<div id="dashBoard_col1">
+						<p>{rival_username}</p>
+						<div className="dashBoard_col">
+							<p className="icon">⏰</p>
+							{gameOver ? <p>{sTime}</p> : <p>{rivalTime}</p>}
+						</div>
 					</div>
 				</div>
-			</div> 
-			: 
-			<div className="dashBoard">
-				<div id="dashBoard_col1">
-					<p>{myName}</p>
-					<div className="dashBoard_col">
-						<p className="icon">⏰</p>
-						{gameOver ? <p>{sTime}</p> : <p>{myTime}</p>}
-					</div>
-				</div>
-				<div id="dashBoard_col1">
-					<p>{rival_username}</p>
-					<div className="dashBoard_col">
-						<p className="icon">⏰</p>
-						{gameOver ? <p>{sTime}</p> : <p>{rivalTime}</p>}
-					</div>
-				</div>
-			</div>
-		  }  
+			)}
 		</div>
-	  );
+	);
 }
