@@ -44,7 +44,7 @@ const GameParamsSetting = ({
         setError("⚠️ Mine number should be between 1 and 50.");
       } else if (boardSize < 8 || boardSize > 20) {
         setError("⚠️ Board size should be between 8 and 20.");
-      } else if (timeLimit < 60 || timeLimit > 180) {
+      } else if (timeLimit < 10 || timeLimit > 180) {
         setError("⚠️ Time limited should be between 60 and 180.");
       } else if (mineNum > boardSize * boardSize) {
         setError(
