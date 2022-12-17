@@ -2,7 +2,7 @@
 by amber, erica, jtc, daphne, wsa
 
 ## About This Project
-This is a 2 Player Online Minesweeper. You can either create an empty room and invite your friend, enter a random room, or join a specific room that your friend has created. In addition to original features of Minesweeper, we add timer into our game to make it more thrilled. Enjoy the match!
+This is a 2 Player Online Minesweeper. You can either create an empty room and invite your friend, enter a random room, or join a specific room that your friend has created. Players take turns to either take a step or place a flag. In addition to original features of Minesweeper, we add timer into our game, to make the competition more thrilled. Enjoy the match!
 
 ## Setup
 ### Backend & Database Setup
