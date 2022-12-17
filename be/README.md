@@ -1,4 +1,4 @@
-# Online MineSweeper
+# Online MineSweeper Backend
 
 ### Setup
 
@@ -11,4 +11,4 @@ And fill in necessary environment variables in `.env` and `docker-compose.yaml`,
 ```shell
 docker-compose up --build -d
 ```
-You may check whether the database is up from `localhost:8082`, and the websocket connection endpoint is `<SERVICE_ADDRESS>/socket`
+You may check whether the database is up from `localhost:8082`, and the websocket connection endpoint is `ws://<SERVICE_ADDRESS>/socket`
