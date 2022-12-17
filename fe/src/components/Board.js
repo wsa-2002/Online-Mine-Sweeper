@@ -125,7 +125,7 @@ const Board = ({
 								setOverReason(
 									`Mines All Found. You get ${
 										timediff ? " " + timediff : ""
-									} less seconds left.`
+									} fewer seconds left.`
 								);
 								break;
 							default:
