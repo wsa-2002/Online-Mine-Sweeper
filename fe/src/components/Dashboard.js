@@ -36,20 +36,26 @@ export default function Dashboard({
 	}, [userInfo]);
 
 	useEffect(() => {
-		if (value.task === "setup" && value.task) {
-			// setMyName(userInfo.username);
-			setRivalUsername(value.data.rival_username);
-			setMyTime(value.data.time_limit);
-			setRivalTime(value.data.time_limit);
-		} else if (value.task === "update_board" && value.data.time_left) {
-			setMyTime(Math.round(value.data.time_left[myName]));
-			setRivalTime(Math.round(value.data.time_left[rival_username]));
-			setTimediff(
-				Math.abs(
-					Math.round(value.data.time_left[myName]) -
-						Math.round(value.data.time_left[rival_username])
-				)
-			);
+		if (!value.error) {
+			if (value.task === "setup" && value.task) {
+				// setMyName(userInfo.username);
+				setRivalUsername(value.data.rival_username);
+				setMyTime(value.data.time_limit);
+				setRivalTime(value.data.time_limit);
+			} else if (
+				value.task === "update_board" &&
+				value.data &&
+				value.data.time_left
+			) {
+				setMyTime(Math.round(value.data.time_left[myName]));
+				setRivalTime(Math.round(value.data.time_left[rival_username]));
+				setTimediff(
+					Math.abs(
+						Math.round(value.data.time_left[myName]) -
+							Math.round(value.data.time_left[rival_username])
+					)
+				);
+			}
 		}
 	}, [value]);
 
